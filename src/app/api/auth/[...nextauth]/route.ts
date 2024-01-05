@@ -2,7 +2,7 @@ import { host } from "@/utils/variables"
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials"
 
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
     // Configure one or more authentication providers
     secret: process.env.AUTH_SECRET,
     session: {
@@ -97,6 +97,6 @@ const authOptions: NextAuthOptions = {
 }
 
 
-const handler = NextAuth(authOptions)
+export const handler = NextAuth(authOptions)
 
 export { handler as GET, handler as POST }

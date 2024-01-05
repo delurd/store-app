@@ -3,7 +3,7 @@ import {Inter} from 'next/font/google';
 import './globals.css';
 import Providers from './Providers';
 import {getServerSession} from 'next-auth';
-import {authOptions} from './api/auth/[...nextauth]/route';
+import {handler} from './api/auth/[...nextauth]/route';
 import 'react-toastify/dist/ReactToastify.css';
 import NextTopLoader from 'nextjs-toploader';
 import {ToastContainer} from 'react-toastify';
@@ -20,7 +20,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(handler);
 
   return (
     <html lang="en" style={{overflow: 'hidden'}}>
