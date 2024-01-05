@@ -1,5 +1,6 @@
 import {StoreTransactionType} from '@/utils/interfaces/globalTypes';
 import moment from 'moment';
+import Image from 'next/image';
 
 type Props = {
   typetransaction?: string | null;
@@ -21,7 +22,8 @@ const TransactionItem = (props: Props) => {
     <div className="p-3 bg-white rounded-lg grid md:grid-cols-12 max-md:gap-2 md:items-center cursor-pointer hover:shadow-lg duration-300 overflow-hidden">
       <div className="sm:flex gap-3 items-center col-span-5">
         <div className="w-11 h-11">
-          <img
+          <Image
+            alt="Thumbnail"
             src={thumbnailPath ? thumbnailPath : '/images/noimage.png'}
             className="w-full h-full object-cover rounded-md"
           />

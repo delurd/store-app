@@ -5,6 +5,7 @@ import {useFetch} from '@/hooks/fetch/useFetch';
 import {formatToCurency} from '@/utils/helper/formatNumberToCurency';
 import {CartDataType} from '@/utils/interfaces/globalTypes';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
+import Image from 'next/image';
 import {toast} from 'react-toastify';
 
 type Props = {
@@ -40,7 +41,8 @@ const CartItem = (props: Props) => {
     <div className="grid md:grid-cols-12 max-md:gap-2 items-center">
       <div className="md:col-span-3">
         <div className="h-[85px] w-[160px] rounded-lg overflow-hidden">
-          <img
+          <Image
+            alt={product?.thumbnailPath ?? ''}
             src={
               product?.thumbnailPath
                 ? product.thumbnailPath

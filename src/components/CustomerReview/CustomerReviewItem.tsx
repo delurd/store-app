@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 type Props = {};
 
 const CustomerReviewItem = (props: Props) => {
@@ -5,7 +7,8 @@ const CustomerReviewItem = (props: Props) => {
     <div className="flex">
       <div>
         <div className="h-14 aspect-square overflow-hidden rounded-full bg-orange-200">
-          <img
+          <Image
+            alt="profile-review"
             src="/images/signin-hero.png"
             className="w-full h-full object-cover"
           />

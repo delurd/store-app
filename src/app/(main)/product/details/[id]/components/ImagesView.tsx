@@ -6,6 +6,7 @@ import {
 } from '@/utils/helper/variants';
 import {ProductImageType} from '@/utils/interfaces/globalTypes';
 import {motion} from 'framer-motion';
+import Image from 'next/image';
 import {useState} from 'react';
 
 type Props = {
@@ -26,7 +27,8 @@ const ImagesView = (props: Props) => {
         variants={varianOpacityListContainer}
         className="sm:col-span-9 md:col-span-8 h-[400px]"
       >
-        <img
+        <Image
+          alt="Preview"
           src={selectedPreview}
           className="w-full h-full object-cover hover:object-contain rounded-lg"
         />
@@ -47,7 +49,8 @@ const ImagesView = (props: Props) => {
               }}
               variants={varianOpacityListItem}
             >
-              <img
+              <Image
+                alt={'product-image' + idx}
                 src={image.path ? image.path : '/images/banner.png'}
                 className={
                   'h-[85px] aspect-video object-cover rounded-lg cursor-pointer border-2 border-transparent hover:border-warning ' +

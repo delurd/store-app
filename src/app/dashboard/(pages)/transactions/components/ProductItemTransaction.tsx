@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
@@ -10,7 +11,8 @@ const ProductItemTransaction = (props: Props) => {
     <Link href={'/product/details/' + props.product.slug}>
       <div className="bg-grey-base p-2 rounded-lg flex items-center gap-4 hover:shadow-lg">
         <div className="h-11 aspect-square">
-          <img
+          <Image
+            alt={'Product'}
             className="w-full h-full object-cover rounded-md"
             src={
               props.product.thumbnailPath

@@ -9,6 +9,7 @@ import {
   varianFadeUpListContainer,
   varianFadeUpListItem,
 } from '@/utils/helper/variants';
+import Image from 'next/image';
 
 type Props = {};
 
@@ -58,7 +59,11 @@ const Navigation = (props: Props) => {
               href={'/dashboard'}
               className={pathName.toString() == '/dashboard' ? s.active : ''}
             >
-              <img className="sm:hidden" src="/icons/dashboard/home.svg" />
+              <Image
+                alt=""
+                className="sm:hidden"
+                src="/icons/dashboard/home.svg"
+              />
               <span className="max-sm:hidden">Dashboard</span>
             </Link>
           </motion.li>
@@ -67,7 +72,11 @@ const Navigation = (props: Props) => {
               href={'/dashboard/products'}
               className={pathName.includes('products') ? s.active : ''}
             >
-              <img className="sm:hidden" src="/icons/dashboard/layout.svg" />
+              <Image
+                alt=""
+                className="sm:hidden"
+                src="/icons/dashboard/layout.svg"
+              />
               <span className="max-sm:hidden">My Products</span>
             </Link>
           </motion.li>
@@ -76,7 +85,11 @@ const Navigation = (props: Props) => {
               href={'/dashboard/transactions'}
               className={pathName.includes('transactions') ? s.active : ''}
             >
-              <img className="sm:hidden" src="/icons/dashboard/card.svg" />
+              <Image
+                alt=""
+                className="sm:hidden"
+                src="/icons/dashboard/card.svg"
+              />
               <span className="max-sm:hidden">Transactions</span>
             </Link>
           </motion.li>
@@ -85,7 +98,11 @@ const Navigation = (props: Props) => {
               href={'/dashboard/settings'}
               className={pathName.includes('settings') ? s.active : ''}
             >
-              <img className="sm:hidden" src="/icons/dashboard/settings.svg" />
+              <Image
+                alt=""
+                className="sm:hidden"
+                src="/icons/dashboard/settings.svg"
+              />
               <span className="max-sm:hidden">Store Settings</span>
             </Link>
           </motion.li>
@@ -94,7 +111,11 @@ const Navigation = (props: Props) => {
               href={'/dashboard/account'}
               className={pathName.includes('account') ? s.active : ''}
             >
-              <img className="sm:hidden" src="/icons/dashboard/user.svg" />
+              <Image
+                alt=""
+                className="sm:hidden"
+                src="/icons/dashboard/user.svg"
+              />
               <span className="max-sm:hidden">My Account</span>
             </Link>
           </motion.li>
@@ -110,7 +131,8 @@ const Navigation = (props: Props) => {
               signOut({callbackUrl: '/'});
             }}
           >
-            <img
+            <Image
+              alt=""
               className="sm:hidden rotate-180 active:bg-grey-base rounded-full"
               src="/icons/dashboard/logout.svg"
             />

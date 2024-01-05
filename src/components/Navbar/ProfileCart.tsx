@@ -3,6 +3,7 @@ import {useFetch} from '@/hooks/fetch/useFetch';
 import {CartDataType} from '@/utils/interfaces/globalTypes';
 import {useQuery} from '@tanstack/react-query';
 import {useSession} from 'next-auth/react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 type Props = {};
@@ -30,11 +31,15 @@ const ProfileCart = (props: Props) => {
         href={'/dashboard'}
         className="flex items-center hover:bg-base rounded-full"
       >
-        <img src="/images/profile.png" className="w-10 h-10 object-cover" />
+        <Image
+          alt=""
+          src="/images/profile.png"
+          className="w-10 h-10 object-cover"
+        />
         <p className="px-3">Hi, {fullname?.split(' ')[0]}</p>
       </Link>
       <Link href={'/cart'} className="relative hover:bg-base p-2 rounded-full">
-        <img src="/icons/shopping.svg" />
+        <Image alt="" src="/icons/shopping.svg" />
         {cartData?.length ? (
           <div className="absolute top-0 right-0 translate-x-1/2 flex-center rounded-full aspect-square px-1.5 text-[9px] font-semibold text-white bg-success">
             {cartData?.length}

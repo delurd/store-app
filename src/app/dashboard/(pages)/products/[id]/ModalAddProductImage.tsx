@@ -5,6 +5,7 @@ import Modal from '@/components/Modal/Modal';
 import {useFetch} from '@/hooks/fetch/useFetch';
 import {ProductDataType} from '@/utils/interfaces/globalTypes';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
+import Image from 'next/image';
 import {useEffect, useState} from 'react';
 import {toast} from 'react-toastify';
 
@@ -82,7 +83,8 @@ const ModalAddProductImage = (props: Props) => {
         <div className="w-60 aspect-square border border-dashed text-grey flex-center rounded-lg cursor-default relative overflow-hidden group hover:bg-slate-50">
           {selectedImage ? (
             <>
-              <img
+              <Image
+                alt="selected image"
                 src={selectedImage ? URL.createObjectURL(selectedImage) : ''}
                 className="w-full h-full object-contain"
               />

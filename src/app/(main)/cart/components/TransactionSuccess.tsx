@@ -1,6 +1,7 @@
 import Button from '@/components/Button/Button';
 import {varianFadeUpListItem} from '@/utils/helper/variants';
 import {motion} from 'framer-motion';
+import Image from 'next/image';
 import Link from 'next/link';
 
 type Props = {};
@@ -19,7 +20,7 @@ const TransactionSuccess = (props: Props) => {
           animate={{y: 0, opacity: 100}}
           transition={{velocity: -1000}}
         >
-          <img src="/icons/bag.svg" className="mb-10" />
+          <Image alt='Bag-icon' src="/icons/bag.svg" className="mb-10" />
         </motion.div>
         <motion.h1
           initial={{y: 50, opacity: 0}}

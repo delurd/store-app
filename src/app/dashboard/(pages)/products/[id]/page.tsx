@@ -16,6 +16,7 @@ import ModalAddProductImage from './ModalAddProductImage';
 import {toast} from 'react-toastify';
 import Loader from '@/components/Loader/Loader';
 import NotFound from '@/components/Errors/NotFound';
+import Image from 'next/image';
 
 type Props = {};
 
@@ -175,7 +176,8 @@ const ProductDetail = ({params}: {params: {id: string}}) => {
                   setThumbnail(image.path ?? '');
                 }}
               >
-                <img
+                <Image
+                  alt={'Product-' + idx}
                   src={image.path ? image.path : ''}
                   className="w-full h-full object-cover hover:object-contain rounded-lg"
                 />

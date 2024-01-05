@@ -8,6 +8,7 @@ import {useFetch} from '@/hooks/fetch/useFetch';
 import {categoriesDatas} from '@/utils/data/category';
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {useSession} from 'next-auth/react';
+import Image from 'next/image';
 import React, {useEffect, useState} from 'react';
 import {toast} from 'react-toastify';
 
@@ -134,7 +135,8 @@ const CreateProduct = (props: Props) => {
                     setThumbnail(image);
                   }}
                 >
-                  <img
+                  <Image
+                    alt=""
                     src={image ? URL.createObjectURL(image) : ''}
                     className="w-full h-full object-cover hover:object-contain rounded-lg"
                   />

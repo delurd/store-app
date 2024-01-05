@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 type Props = {};
 
 const HomepageBanner = (props: Props) => {
@@ -9,7 +11,7 @@ const HomepageBanner = (props: Props) => {
         </h1>
         <p>Included tax pricing for U.S citizen or other countries</p>
       </div>
-      <img src="/images/banner.png" className="object-cover h-full w-full" />
+      <Image alt="Banner-image" src="/images/banner.png" className="object-cover h-full w-full" />
     </div>
   );
 };

@@ -9,6 +9,7 @@ import {useRouter} from 'next/navigation';
 import {useState} from 'react';
 import Loader from '@/components/Loader/Loader';
 import {toast} from 'react-toastify';
+import Image from 'next/image';
 
 type Props = {};
 
@@ -64,7 +65,8 @@ const SigninPage = (props: Props) => {
       <div className="grid md:grid-cols-2 max-md:gap-10">
         <div className={s.hero + ' ' + 'max-md:hidden'}>
           <div className="relative">
-            <img
+            <Image
+              alt="hero image"
               src="./images/signin-hero.png"
               className="rounded-tr-[48px] rounded-bl-[48px]  object-cover"
             />

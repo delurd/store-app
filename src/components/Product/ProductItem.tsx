@@ -1,6 +1,7 @@
 'use client';
 import {formatToCurency} from '@/utils/helper/formatNumberToCurency';
 import {Transition} from '@headlessui/react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 type Props = {
@@ -26,7 +27,8 @@ const ProductItem = (props: Props) => {
         enterTo="opacity-100"
       > */}
       <div className="cursor-pointer  rounded-lg border-b border-transparent group hover:border-grey">
-        <img
+        <Image
+          alt=""
           src={
             props.thumbnailPath ? props.thumbnailPath : '/images/noimage.png'
           }
