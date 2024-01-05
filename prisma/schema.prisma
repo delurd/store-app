@@ -1,0 +1,129 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// datasource db {
+//   provider = "mysql"
+//   url      = env("DATABASE_URL")
+// }
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id           String         @id @default(uuid())
+  fullname     String
+  email        String         @unique
+  password     String
+  UserProfile  UserProfile?
+  Store        Store?
+  Products     Products[]
+  UserCart     UserCart[]
+  Transactions Transactions[]
+}
+
+model Store {
+  id         String     @id @default(uuid())
+  userId     String     @unique
+  user       User       @relation(fields: [userId], references: [id])
+  name       String?
+  category   String?
+  openStatus Boolean    @default(false)
+  Products   Products[]
+}
+
+model UserProfile {
+  id         String  @id @default(uuid())
+  userId     String  @unique
+  user       User    @relation(fields: [userId], references: [id])
+  address1   String?
+  address2   String?
+  provice    String?
+  city       String?
+  postalCode String?
+  country    String?
+  phone      String?
+}
+
+model Products {
+  id                  String                @id @default(uuid())
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  name                String
+  price               String
+  category            String
+  description         String
+  slug                String
+  thumbnailPath       String?
+  published           Boolean               @default(true)
+  storeId             String
+  store               Store                 @relation(fields: [storeId], references: [id])
+  sellerId            String
+  seller              User                  @relation(fields: [sellerId], references: [id])
+  ProductsImages      ProductsImages[]
+  UserCart            UserCart[]
+  ProductsTransaction ProductsTransaction[]
+}
+
+model ProductsImages {
+  id        String   @id @default(uuid())
+  path      String
+  productId String
+  product   Products @relation(fields: [productId], references: [id])
+}
+
+model CustomerReview {
+  id        String @id @default(uuid())
+  name      String
+  review    String
+  userId    String
+  productId String
+}
+
+model UserCart {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  productId String
+  product   Products @relation(fields: [productId], references: [id])
+}
+
+model Transactions {
+  id               String             @id @default(uuid())
+  buyerId          String
+  buyer            User               @relation(fields: [buyerId], references: [id])
+  paymentTotal     String
+  paymentStatus    String             @default("pending")
+  createdAt        DateTime           @default(now())
+  StoreTransaction StoreTransaction[]
+}
+
+model StoreTransaction {
+  id                  String                @id @default(uuid())
+  totalPrice          String
+  shippingStatus      String                @default("pending")
+  shippingReceipt     String?
+  shippingPrice       String?
+  transactionId       String
+  transaction         Transactions          @relation(fields: [transactionId], references: [id])
+  ProductsTransaction ProductsTransaction[]
+  createdAt           DateTime              @default(now())
+}
+
+model ProductsTransaction {
+  id                 String           @id @default(uuid())
+  storeTransactionId String
+  storeTransaction   StoreTransaction @relation(fields: [storeTransactionId], references: [id])
+  productId          String
+  product            Products         @relation(fields: [productId], references: [id])
+  createdAt          DateTime         @default(now())
+}
+
+// beda seller?
+// ongkos kirim?

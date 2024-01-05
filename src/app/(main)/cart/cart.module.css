@@ -1,0 +1,3 @@
+.cart .form label {
+  @apply mb-1 inline-block;
+}

@@ -1,0 +1,3 @@
+- update skema transaksi
+- tambah alamat di database transaksi
+- integrasi https://rajaongkir.com/dokumentasi untuk dapat harga ongkir

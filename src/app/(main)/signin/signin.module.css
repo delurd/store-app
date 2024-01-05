@@ -1,0 +1,12 @@
+.hero > div::after {
+  content: '';
+  height: 396px;
+  width: 298px;
+  display: block;
+  border-radius: 0 48px 0 48px;
+  position: absolute;
+  top: 0;
+  z-index: -10;
+  transform: translate(-25px, 25px);
+  @apply border border-grey-base;
+}

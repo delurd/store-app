@@ -1,0 +1,7 @@
+.paginateContainer {
+  @apply w-full flex justify-center;
+}
+
+.paginateContainer button {
+  @apply px-3 py-1 outline outline-2 outline-transparent hover:bg-white hover:outline-base rounded-md my-2;
+}

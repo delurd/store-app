@@ -1,0 +1,12 @@
+.transaction {
+}
+
+.transaction .transactionNav ul li {
+  cursor: pointer;
+  @apply text-grey-dark;
+}
+
+.transactionNav ul li.active {
+  font-weight: 500;
+  color: black !important;
+}

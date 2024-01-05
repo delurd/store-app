@@ -1,0 +1,16 @@
+.navigation ul {
+  @apply space-y-4 my-8;
+}
+.navigation ul li {
+  overflow-x: hidden;
+}
+
+.navigation ul li a {
+  @apply py-2 px-6 font-medium block text-grey-dark border-r-4 border-transparent;
+}
+.navigation ul li a:hover {
+  @apply text-black;
+}
+.navigation ul li a.active {
+  @apply text-black bg-gradient-to-r from-10% from-transparent to-[#FF71585d]  border-warning;
+}
