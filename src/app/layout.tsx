@@ -3,10 +3,10 @@ import {Inter} from 'next/font/google';
 import './globals.css';
 import Providers from './Providers';
 import {getServerSession} from 'next-auth';
-import {handler} from './api/auth/[...nextauth]/route';
 import 'react-toastify/dist/ReactToastify.css';
 import NextTopLoader from 'nextjs-toploader';
 import {ToastContainer} from 'react-toastify';
+import {authOptions} from './api/auth/[...nextauth]/action';
 
 const inter = Inter({subsets: ['latin']});
 
@@ -20,7 +20,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(handler);
+  const session = await getServerSession(authOptions);
 
   return (
     <html lang="en" style={{overflow: 'hidden'}}>
