@@ -43,7 +43,7 @@ const variants = {
   },
 };
 
-const page = (props: Props) => {
+const Reward = (props: Props) => {
   const [selectedPerson, setSelectedPerson] = useState(people[0]);
   const [selectedItem, setSelectedItem] = useState(1);
 
@@ -97,7 +97,7 @@ const page = (props: Props) => {
   return <div className="flex-1 flex-center">Under Development</div>;
   return (
     <div className="flex-1">
-      page
+      Reward
       <Listbox
         value={selectedPerson}
         onChange={setSelectedPerson}
@@ -151,4 +151,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default Reward;
