@@ -7,6 +7,7 @@ import {
   varianFadeUpListContainer,
   varianFadeUpListItem,
 } from '@/utils/helper/variants';
+import {host} from '@/utils/variables';
 import {useQuery} from '@tanstack/react-query';
 import {motion} from 'framer-motion';
 import {parseAsInteger, useQueryState} from 'next-usequerystate';
@@ -42,6 +43,8 @@ const TransactionList = (props: Props) => {
 
   useEffect(() => {
     data?.total && setTotalPage(data?.total);
+    console.log('HOST URL');
+    console.log(host);
   }, [data]);
 
   return (
