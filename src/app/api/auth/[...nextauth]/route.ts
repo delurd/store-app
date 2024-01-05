@@ -2,7 +2,7 @@ import { host } from "@/utils/variables"
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials"
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
     // Configure one or more authentication providers
     secret: process.env.AUTH_SECRET,
     session: {
