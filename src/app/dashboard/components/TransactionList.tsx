@@ -43,8 +43,6 @@ const TransactionList = (props: Props) => {
 
   useEffect(() => {
     data?.total && setTotalPage(data?.total);
-    console.log('HOST URL');
-    console.log(host);
   }, [data]);
 
   return (

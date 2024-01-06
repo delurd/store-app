@@ -62,7 +62,7 @@ const Reward = (props: Props) => {
 
   const fetching = async () => {
     return fetch('https://api.rajaongkir.com/starter/province', {
-      mode: 'no-cors',
+      // mode: 'no-cors',
       headers: {
         key: 'a32919a2bc56c147be936e71d57dc0f8',
         // 'Content-Type': 'application/json',
