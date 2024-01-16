@@ -4,6 +4,7 @@ import {rajaongkirKey} from '@/utils/variables';
 import {Listbox} from '@headlessui/react';
 import {useQuery} from '@tanstack/react-query';
 import {motion} from 'framer-motion';
+import {request} from 'https';
 import {redirect} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
 
@@ -47,51 +48,25 @@ const Reward = (props: Props) => {
   const [selectedPerson, setSelectedPerson] = useState(people[0]);
   const [selectedItem, setSelectedItem] = useState(1);
 
-  const number = 100000;
-
-  // console.log(
-  //   new Intl.NumberFormat('de-DE').format(
-  //     number
-  //   )
-  // );
   const {fetchData} = useFetch();
-  // const {data} = useQuery({
-  //   queryKey: ['rajaongkir', 'provice'],
-  //   queryFn: async () => fetching(),
-  // });
 
   const fetching = async () => {
-    return fetch('https://api.rajaongkir.com/starter/province', {
-      // mode: 'no-cors',
-      headers: {
-        key: 'a32919a2bc56c147be936e71d57dc0f8',
-        // 'Content-Type': 'application/json',
-        // Accept: '*/*',
-        // 'Access-Control-Allow-Origin': 'https://api.rajaongkir.com',
-      },
-    })
+    return fetchData('/api/ongkir/province')
       .then(async (res) => {
-        if (!res.ok) throw res;
-
-        console.log(res);
+        console.log(await res.json().then((json) => json.data));
         console.log('berhasil');
 
         return res;
       })
       .catch((res) => {
         console.log('eror');
-        console.log(res);
 
         return res;
       });
-
-    // const json = await res.json();
-
-    // console.log('res');
   };
 
   useEffect(() => {
-    fetching();
+    // fetching();
   }, []);
 
   return <div className="flex-1 flex-center">Under Development</div>;

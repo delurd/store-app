@@ -20,7 +20,7 @@ const TransactionSuccess = (props: Props) => {
           animate={{y: 0, opacity: 100}}
           transition={{velocity: -1000}}
         >
-          <Image alt='Bag-icon' src="/icons/bag.svg" className="mb-10" />
+          <img alt='Bag-icon' src="/icons/bag.svg" className="mb-10" />
         </motion.div>
         <motion.h1
           initial={{y: 50, opacity: 0}}

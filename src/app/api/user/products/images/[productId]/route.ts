@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client"
 import { NextRequest, NextResponse } from "next/server"
-const prisma = new PrismaClient()
+import { prisma } from "@/app/api/action";
 
 export const GET = async (req: NextRequest, context: { params: { productId: string } }) => {
     const productId = context.params.productId ?? ''

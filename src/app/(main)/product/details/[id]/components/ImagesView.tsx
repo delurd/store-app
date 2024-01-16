@@ -27,7 +27,7 @@ const ImagesView = (props: Props) => {
         variants={varianOpacityListContainer}
         className="sm:col-span-9 md:col-span-8 h-[400px]"
       >
-        <Image
+        <img
           alt="Preview"
           src={selectedPreview}
           className="w-full h-full object-cover hover:object-contain rounded-lg"
@@ -49,7 +49,7 @@ const ImagesView = (props: Props) => {
               }}
               variants={varianOpacityListItem}
             >
-              <Image
+              <img
                 alt={'product-image' + idx}
                 src={image.path ? image.path : '/images/banner.png'}
                 className={

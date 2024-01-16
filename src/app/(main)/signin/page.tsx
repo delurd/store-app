@@ -61,11 +61,11 @@ const SigninPage = (props: Props) => {
     return <div className="flex-1"></div>;
 
   return (
-    <main className={'flex-1 flex-center mb-10  ' + s.signin}>
+    <main className={'container-base flex-1 flex-center mb-10  ' + s.signin}>
       <div className="grid md:grid-cols-2 max-md:gap-10">
         <div className={s.hero + ' ' + 'max-md:hidden'}>
           <div className="relative">
-            <Image
+            <img
               alt="hero image"
               src="./images/signin-hero.png"
               className="rounded-tr-[48px] rounded-bl-[48px]  object-cover"

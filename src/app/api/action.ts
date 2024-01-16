@@ -1,3 +1,7 @@
+import { PrismaClient } from "@prisma/client";
+export const prisma = new PrismaClient()
+
+
 export const generateRandomId = (aditional = "") => {
 
     const rand1 = Math.random().toString(36).substring(2, 10);

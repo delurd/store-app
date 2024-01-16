@@ -27,7 +27,7 @@ const ProductItem = (props: Props) => {
         enterTo="opacity-100"
       > */}
       <div className="cursor-pointer  rounded-lg border-b border-transparent group hover:border-grey">
-        <Image
+        <img
           alt=""
           src={
             props.thumbnailPath ? props.thumbnailPath : '/images/noimage.png'

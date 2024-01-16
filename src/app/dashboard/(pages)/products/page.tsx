@@ -45,30 +45,27 @@ const ProductPage = (props: Props) => {
             <div className="flex-center p-10 w-full">
               <Loader size="medium" />
             </div>
-          ) : (
-            data &&
-            data?.length && (
-              <motion.div
-                variants={varianFadeUpListContainer}
-                initial={'hidden'}
-                animate={'show'}
-                className="my-8 flex flex-wrap gap-10"
-              >
-                {data?.map((data: ProductDataType, idx) => (
-                  <motion.div key={idx} variants={varianFadeUpListItem}>
-                    <ProductCard
-                      category={data?.category}
-                      title={data?.name}
-                      slug={data?.slug}
-                      imagePath={data.thumbnailPath}
-                    />
-                  </motion.div>
-                ))}
-              </motion.div>
-            )
-          )}
+          ) : data && data?.length ? (
+            <motion.div
+              variants={varianFadeUpListContainer}
+              initial={'hidden'}
+              animate={'show'}
+              className="my-8 flex flex-wrap gap-10"
+            >
+              {data?.map((data: ProductDataType, idx) => (
+                <motion.div key={idx} variants={varianFadeUpListItem}>
+                  <ProductCard
+                    category={data?.category}
+                    title={data?.name}
+                    slug={data?.id}
+                    imagePath={data.thumbnailPath}
+                  />
+                </motion.div>
+              ))}
+            </motion.div>
+          ) : null}
           {!isLoading && !data?.length ? (
-            <p className="text-center text-grey-dark">No Products</p>
+            <p className="text-center text-grey-dark m-10">No Products</p>
           ) : null}
           {/* </div> */}
         </>

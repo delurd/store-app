@@ -13,7 +13,7 @@ const ProductCard = (props: Props) => {
   return (
     <Link href={'products/' + props.slug}>
       <div className="p-3 bg-white rounded-lg max-w-max hover:shadow-xl duration-300 cursor-pointer">
-        <Image
+        <img
           src={props.imagePath ? props.imagePath : '/images/noimage.png'}
           alt="product-image"
           className="h-40 w-[214px] object-cover rounded-md mb-5"

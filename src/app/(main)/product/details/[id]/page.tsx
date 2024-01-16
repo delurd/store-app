@@ -1,8 +1,6 @@
 // 'use client';
-import Button from '@/components/Button/Button';
 import CustomerReview from '@/components/CustomerReview/CustomerReviewItem';
 import {host} from '@/utils/variables';
-import {useQuery} from '@tanstack/react-query';
 import Link from 'next/link';
 import React from 'react';
 import BackButton from './components/BackButton';
@@ -28,6 +26,7 @@ const ProductDetailPage = async ({params}: {params: {id: string}}) => {
   const slug = params.id;
 
   const resData = await getData(slug);
+
   if (!resData.ok) {
     return (
       <main className="flex-1 flex-center">
@@ -42,8 +41,6 @@ const ProductDetailPage = async ({params}: {params: {id: string}}) => {
   const data: ProductDataType = await resData
     .json()
     .then((json: any) => json.data);
-
-  // console.log(data);
 
   return (
     <main className="flex-1">
@@ -71,7 +68,10 @@ const ProductDetailPage = async ({params}: {params: {id: string}}) => {
             </p>
           </div>
           <div className="md:col-span-2 max-lg:order-first max-lg:flex max-lg:justify-end ">
-            <AddCartButton productId={data.id} />
+            <AddCartButton
+              isAvailable={data.quantity ? data.quantity > 0 : true}
+              productId={data.id}
+            />
           </div>
         </div>
         <div className="md:w-2/3">

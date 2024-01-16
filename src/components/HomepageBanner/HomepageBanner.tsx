@@ -11,7 +11,7 @@ const HomepageBanner = (props: Props) => {
         </h1>
         <p>Included tax pricing for U.S citizen or other countries</p>
       </div>
-      <Image alt="Banner-image" src="/images/banner.png" className="object-cover h-full w-full" />
+      <img alt="Banner-image" src="/images/banner.png" className="object-cover h-full w-full" />
     </div>
   );
 };

@@ -26,16 +26,29 @@ model User {
   Products     Products[]
   UserCart     UserCart[]
   Transactions Transactions[]
+  // FinancialHistory FinancialHistory[]
 }
 
 model Store {
-  id         String     @id @default(uuid())
-  userId     String     @unique
-  user       User       @relation(fields: [userId], references: [id])
-  name       String?
-  category   String?
-  openStatus Boolean    @default(false)
-  Products   Products[]
+  id               String             @id @default(uuid())
+  userId           String             @unique
+  user             User               @relation(fields: [userId], references: [id])
+  name             String?
+  category         String?
+  openStatus       Boolean            @default(false)
+  Products         Products[]
+  FinancialHistory FinancialHistory[]
+}
+
+model FinancialHistory {
+  id          String  @id @default(uuid())
+  amount      String
+  type        String //IN | OUT
+  description String?
+  storeId     String
+  store       Store   @relation(fields: [storeId], references: [id])
+  // userId String
+  // user   User   @relation(fields: [userId], references: [id])
 }
 
 model UserProfile {
@@ -45,18 +58,22 @@ model UserProfile {
   address1   String?
   address2   String?
   provice    String?
+  proviceId  String?
   city       String?
+  cityId     String?
   postalCode String?
   country    String?
   phone      String?
 }
 
 model Products {
-  id                  String                @id @default(uuid())
+  id                  String                @id @default(cuid())
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
   name                String
   price               String
+  weight              Int
+  quantity            Int
   category            String
   description         String
   slug                String
@@ -75,7 +92,7 @@ model ProductsImages {
   id        String   @id @default(uuid())
   path      String
   productId String
-  product   Products @relation(fields: [productId], references: [id])
+  product   Products @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model CustomerReview {
@@ -91,27 +108,49 @@ model UserCart {
   userId    String
   user      User     @relation(fields: [userId], references: [id])
   productId String
-  product   Products @relation(fields: [productId], references: [id])
+  product   Products @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Payment {
+  id            String       @id @default(uuid())
+  paymentTotal  String
+  paymentStatus String       @default("pending") //pending | success | failed | canceled
+  paymentCode   String?
+  paymentMethod String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  transactionId String       @unique
+  transaction   Transactions @relation(fields: [transactionId], references: [id])
 }
 
 model Transactions {
-  id               String             @id @default(uuid())
+  id               String             @id @default(cuid())
   buyerId          String
   buyer            User               @relation(fields: [buyerId], references: [id])
+  buyerName        String
+  buyerPhone       String
+  buyerAddress1    String
+  buyerAddress2    String
+  buyerCity        String
+  buyerProvice     String
+  buyerCountry     String
+  buyerPostalCode  String
   paymentTotal     String
-  paymentStatus    String             @default("pending")
+  paymentStatus    String             @default("pending") //pending | success | failed | canceled
   createdAt        DateTime           @default(now())
   StoreTransaction StoreTransaction[]
+  Payment          Payment?
 }
 
 model StoreTransaction {
-  id                  String                @id @default(uuid())
+  id                  String                @id @default(cuid())
   totalPrice          String
-  shippingStatus      String                @default("pending")
+  shippingStatus      String                @default("pending") //pending | process | shipping | success | canceled
   shippingReceipt     String?
   shippingPrice       String?
+  shippingCourier     String?               @default("jne reg")
   transactionId       String
-  transaction         Transactions          @relation(fields: [transactionId], references: [id])
+  transaction         Transactions          @relation(fields: [transactionId], references: [id], onDelete: Cascade)
   ProductsTransaction ProductsTransaction[]
   createdAt           DateTime              @default(now())
 }
@@ -119,11 +158,8 @@ model StoreTransaction {
 model ProductsTransaction {
   id                 String           @id @default(uuid())
   storeTransactionId String
-  storeTransaction   StoreTransaction @relation(fields: [storeTransactionId], references: [id])
+  storeTransaction   StoreTransaction @relation(fields: [storeTransactionId], references: [id], onDelete: Cascade)
   productId          String
   product            Products         @relation(fields: [productId], references: [id])
   createdAt          DateTime         @default(now())
 }
-
-// beda seller?
-// ongkos kirim?

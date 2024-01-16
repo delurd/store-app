@@ -8,8 +8,7 @@ import {useFetch} from '@/hooks/fetch/useFetch';
 import {categoriesDatas} from '@/utils/data/category';
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {useSession} from 'next-auth/react';
-import Image from 'next/image';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {toast} from 'react-toastify';
 
 type Props = {};
@@ -78,6 +77,16 @@ const CreateProduct = (props: Props) => {
               <Input type="text" id="price" name="price" />
             </div>
           </div>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <label htmlFor="price">Weight (gram)</label>
+              <Input min={0} type="number" id="weight" name="weight" />
+            </div>
+            <div>
+              <label htmlFor="name">Quantity</label>
+              <Input min={0} type="number" id="quantity" name="quantity" />
+            </div>
+          </div>
           <div>
             <label htmlFor="category">Category</label>
             {/* <Input type="text" id="category" name="category" /> */}
@@ -87,9 +96,7 @@ const CreateProduct = (props: Props) => {
               })}
               selectWidth="w-full"
               defaultValue={''}
-              getValue={(val) => {
-                console.log(val);
-              }}
+              getValue={(val) => {}}
               name="category"
             />
           </div>
@@ -135,7 +142,7 @@ const CreateProduct = (props: Props) => {
                     setThumbnail(image);
                   }}
                 >
-                  <Image
+                  <img
                     alt=""
                     src={image ? URL.createObjectURL(image) : ''}
                     className="w-full h-full object-cover hover:object-contain rounded-lg"

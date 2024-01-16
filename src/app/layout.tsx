@@ -26,7 +26,7 @@ export default async function RootLayout({
     <html lang="en" style={{overflow: 'hidden'}}>
       <body className={inter.className + ' ' + 'h-screen overflow-y-scroll'}>
         <NextTopLoader color="#29A867" showSpinner={false} />
-        <div className="h-full flex flex-col">
+        <div className="min-h-full flex flex-col">
           <Providers session={session}>{children}</Providers>
         </div>
         <ToastContainer

@@ -3,7 +3,10 @@ import Button from '@/components/Button/Button';
 import Loader from '@/components/Loader/Loader';
 import Modal from '@/components/Modal/Modal';
 import {useFetch} from '@/hooks/fetch/useFetch';
-import {ProductDataType} from '@/utils/interfaces/globalTypes';
+import {
+  ProductDataType,
+  ProductImageType,
+} from '@/utils/interfaces/globalTypes';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import Image from 'next/image';
 import {useEffect, useState} from 'react';
@@ -63,6 +66,16 @@ const ModalAddProductImage = (props: Props) => {
           props.setImagesPath &&
             props.setImagesPath((prev) => [...prev, json?.data]);
 
+          queryClient.setQueryData(
+            ['products', props.slug],
+            (old: ProductDataType) => {
+              const productImage = old.ProductsImages ?? [];
+              const images: ProductImageType[] = [...productImage, json.data];
+
+              return {...old, ProductsImages: images};
+            }
+          );
+
           props.onClose();
         })
         .catch((err) => {
@@ -83,7 +96,7 @@ const ModalAddProductImage = (props: Props) => {
         <div className="w-60 aspect-square border border-dashed text-grey flex-center rounded-lg cursor-default relative overflow-hidden group hover:bg-slate-50">
           {selectedImage ? (
             <>
-              <Image
+              <img
                 alt="selected image"
                 src={selectedImage ? URL.createObjectURL(selectedImage) : ''}
                 className="w-full h-full object-contain"

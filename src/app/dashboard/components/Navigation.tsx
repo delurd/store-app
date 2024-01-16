@@ -59,7 +59,7 @@ const Navigation = (props: Props) => {
               href={'/dashboard'}
               className={pathName.toString() == '/dashboard' ? s.active : ''}
             >
-              <Image
+              <img
                 alt=""
                 className="sm:hidden"
                 src="/icons/dashboard/home.svg"
@@ -72,7 +72,7 @@ const Navigation = (props: Props) => {
               href={'/dashboard/products'}
               className={pathName.includes('products') ? s.active : ''}
             >
-              <Image
+              <img
                 alt=""
                 className="sm:hidden"
                 src="/icons/dashboard/layout.svg"
@@ -85,7 +85,7 @@ const Navigation = (props: Props) => {
               href={'/dashboard/transactions'}
               className={pathName.includes('transactions') ? s.active : ''}
             >
-              <Image
+              <img
                 alt=""
                 className="sm:hidden"
                 src="/icons/dashboard/card.svg"
@@ -98,7 +98,7 @@ const Navigation = (props: Props) => {
               href={'/dashboard/settings'}
               className={pathName.includes('settings') ? s.active : ''}
             >
-              <Image
+              <img
                 alt=""
                 className="sm:hidden"
                 src="/icons/dashboard/settings.svg"
@@ -111,7 +111,7 @@ const Navigation = (props: Props) => {
               href={'/dashboard/account'}
               className={pathName.includes('account') ? s.active : ''}
             >
-              <Image
+              <img
                 alt=""
                 className="sm:hidden"
                 src="/icons/dashboard/user.svg"
@@ -131,7 +131,7 @@ const Navigation = (props: Props) => {
               signOut({callbackUrl: '/'});
             }}
           >
-            <Image
+            <img
               alt=""
               className="sm:hidden rotate-180 active:bg-grey-base rounded-full"
               src="/icons/dashboard/logout.svg"

@@ -11,7 +11,7 @@ const ProductItemTransaction = (props: Props) => {
     <Link href={'/product/details/' + props.product.slug}>
       <div className="bg-grey-base p-2 rounded-lg flex items-center gap-4 hover:shadow-lg">
         <div className="h-11 aspect-square">
-          <Image
+          <img
             alt={'Product'}
             className="w-full h-full object-cover rounded-md"
             src={

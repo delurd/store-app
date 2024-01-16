@@ -8,9 +8,8 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {useFetch} from '@/hooks/fetch/useFetch';
 import {CartDataType, UserAccountType} from '@/utils/interfaces/globalTypes';
 import Loader from '@/components/Loader/Loader';
-import {useRouter} from 'next/navigation';
 import {useSession} from 'next-auth/react';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {toast} from 'react-toastify';
 import {motion} from 'framer-motion';
 import {
@@ -19,15 +18,18 @@ import {
 } from '@/utils/helper/variants';
 import AuthenticateRequired from './components/AuthenticateRequired';
 import {formatToCurency} from '@/utils/helper/formatNumberToCurency';
+import ShippingAddress from './components/ShippingAddress';
+import CartEmpty from './components/CartEmpty';
 
 type Props = {};
 
 const CartPage = (props: Props) => {
   const {status} = useSession();
   const {fetchWithToken} = useFetch();
-  const router = useRouter();
   const queryClient = useQueryClient();
   const [transactionProcess, setTransactionProcess] = useState(false);
+  const serviceFee = 1000;
+
   const mutationCheckout = useMutation({
     mutationKey: ['checkout'],
     mutationFn: async (func: () => Promise<void>) => func(),
@@ -52,21 +54,100 @@ const CartPage = (props: Props) => {
       ),
   });
 
-  const totalPayment = cartData.reduce((total: number, data: CartDataType) => {
+  const totalPrice = cartData.reduce((total: number, data: CartDataType) => {
     return total + parseInt(data.product?.price ?? '0');
   }, 0);
 
-  const groupCartByStore = () => {
-    //@ts-ignore
-    const hasil = Object.groupBy(cartData, (data: CartDataType) => {
-      return data.product?.storeId;
-    });
+  const groupCartByStore = (data?: any[]) => {
+    const result: any[] = [];
+
+    if (cartData.length) {
+      //@ts-ignore
+      const hasil = Object.groupBy(cartData, (data: CartDataType) => {
+        return data.product?.storeId;
+      });
+
+      for (const data in hasil) {
+        result.push(hasil[data]);
+      }
+    }
+
+    return result;
+  };
+
+  const fetchOngkir = async (
+    originId: string,
+    destinationId: string,
+    weight?: number
+  ) => {
+    return await fetchWithToken(
+      '/api/ongkir/cost',
+      'POST',
+      JSON.stringify({
+        origin: originId,
+        destination: destinationId,
+        weight,
+      })
+    )
+      .then(async (res) => await res.json().then((json) => json.data))
+      .catch((res) => 0);
+  };
+
+  const [cartList, setCartList] = useState<any[]>([]);
+  const [listOngkir, setListOngkir] = useState<any[]>([]);
+  const totalOngkir = listOngkir.length
+    ? listOngkir.reduce((total, data) => total + data)
+    : 0;
+
+  useEffect(() => {
+    cartData.length && setCartList(groupCartByStore(cartData));
+  }, [cartData.length]);
+
+  useEffect(() => {
+    const buyerCityId = userProfile?.cityId ?? '';
+
+    async function ongkir() {
+      const _listOngkir: any[] = [];
+
+      for (const cart of cartList) {
+        const _sellerCityId = cart[0]?.product?.seller?.UserProfile.cityId;
+        const _weight = cart?.reduce(
+          (total: number, data: any) => total + data?.product?.weight,
+          0
+        );
+
+        const ongkir = await queryClient.fetchQuery({
+          queryKey: ['ongkir', _sellerCityId, buyerCityId],
+          queryFn: async () =>
+            await fetchOngkir(_sellerCityId ?? '', buyerCityId ?? '', _weight),
+        });
+
+        _listOngkir.push(await ongkir);
+      }
+
+      setListOngkir(_listOngkir);
+    }
+
+    if (cartList.length && userProfile?.cityId) {
+      ongkir();
+    }
+  }, [cartList.length, userProfile?.cityId]);
+
+  const groupProductStore = () => {
+    const hasil = groupCartByStore();
 
     const result = [];
-    for (const data in hasil) {
+    for (let i = 0; i < hasil.length; i++) {
+      const data = hasil[i];
+
       result.push({
-        storeId: data,
-        productsId: hasil[data].map((data: any) => data.productId),
+        storeId: data[0]?.product?.storeId,
+        productsId: data?.map((data: any) => data.productId),
+        shippingPrice: listOngkir[i] ?? 0,
+        totalPrice: data?.reduce(
+          (total: number, item: any) => total + parseInt(item.product.price),
+          0
+        ),
       });
     }
 
@@ -74,13 +155,12 @@ const CartPage = (props: Props) => {
   };
 
   const actionCheckout = async () => {
-    const productStore = groupCartByStore();
+    const productStore = groupProductStore();
 
     const body = {
-      paymentTotal: totalPayment.toString(),
+      paymentTotal: (totalPrice + totalOngkir + serviceFee).toString(),
       productStore,
     };
-    // setTransactionProcess(true);
 
     await fetchWithToken(
       '/api/user/transactions/buy',
@@ -88,7 +168,7 @@ const CartPage = (props: Props) => {
       JSON.stringify(body)
     )
       .then((res) => {
-        console.log('success');
+        // console.log('success');
         setTransactionProcess(true);
         queryClient.setQueryData(['cart'], (old: any[]) => []);
         return res;
@@ -108,32 +188,22 @@ const CartPage = (props: Props) => {
   }
 
   return (
-    <main className={'flex-1 mb-10 ' + s.cart}>
+    <main className={'flex-1 flex flex-col mb-10 ' + s.cart}>
       {transactionProcess && <TransactionSuccess />}
       {isLoading ? (
-        <div className="h-full flex-center">
+        <div className="flex-1 flex-center">
           <Loader size="medium" />
         </div>
       ) : !cartData.length ? (
-        <div className="h-full flex-center">
-          <div className="flex flex-col items-center gap-5 text-grey-secondary">
-            <p>Keranjang Masih Kosong</p>
-            <Button
-              onClick={() => {
-                router.push('/');
-              }}
-              className="bg-success text-white max-w-max"
-            >
-              Mulai Belanja
-            </Button>
-          </div>
+        <div className="flex-1 h-full flex-center">
+          <CartEmpty />
         </div>
       ) : (
         <motion.div
           initial={'hidden'}
           animate={'show'}
           variants={varianFadeUpListContainer}
-          className="container-base space-y-7"
+          className="container-base space-y-7 "
         >
           <motion.p
             variants={varianFadeUpListItem}
@@ -142,7 +212,7 @@ const CartPage = (props: Props) => {
             <Link href={'/'}>Home</Link> <span>/</span>{' '}
             <span className="text-black">Cart</span>
           </motion.p>
-          <div>
+          <>
             <motion.div
               variants={varianFadeUpListItem}
               className="grid grid-cols-12 mb-6 max-md:hidden"
@@ -152,16 +222,33 @@ const CartPage = (props: Props) => {
               <div className="col-span-3">Price</div>
               <div className="col-span-1">Menu</div>
             </motion.div>
-            <div className="md:space-y-6 mb-6 max-md:flex max-md:flex-wrap max-md:gap-5">
-              {cartData?.length &&
-                cartData.map((item: CartDataType, idx: number) => (
-                  <motion.div key={idx} variants={varianFadeUpListItem}>
-                    <CartItem data={item} />
-                  </motion.div>
-                ))}
-            </div>
+            <motion.div
+              variants={varianFadeUpListItem}
+              className="md:space-y-6 mb-6 max-md:flex max-md:flex-wrap max-md:gap-5"
+            >
+              {cartList.length
+                ? cartList.map((cartByStore: any[], indexStore) => (
+                    <div className="space-y-5 pb-5" key={indexStore}>
+                      {cartByStore.map((item, indexProduct) => (
+                        <CartItem data={item} key={indexProduct} />
+                      ))}
+                      <div className="flex gap-5 lg:pr-10 items-center text-grey-dark">
+                        <hr className="flex-1 border-base" />
+                        <p>Shipping</p>
+                        <p>:</p>
+                        <p>
+                          Rp
+                          {listOngkir[indexStore]
+                            ? formatToCurency(listOngkir[indexStore])
+                            : '-'}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                : null}
+            </motion.div>
             <motion.hr variants={varianFadeUpListItem} />
-          </div>
+          </>
           <div className="space-y-4">
             <motion.div
               variants={varianFadeUpListItem}
@@ -175,86 +262,7 @@ const CartPage = (props: Props) => {
                 Edit
               </Link>
             </motion.div>
-            <div className={'space-y-5 ' + s.form}>
-              <motion.div
-                variants={varianFadeUpListItem}
-                className="grid md:grid-cols-2 gap-5"
-              >
-                <div>
-                  <label htmlFor="address1">Address 1</label>
-                  <div
-                    className="bg-grey-base p-[10px] min-h-12 rounded-lg flex items-center overflow-hidden"
-                    id="address1"
-                  >
-                    {userProfile?.address1}
-                  </div>
-                </div>
-                <div>
-                  <label htmlFor="address2">Address 2</label>
-                  <div
-                    className="bg-grey-base p-[10px] min-h-12 rounded-lg flex items-center overflow-hidden"
-                    id="address2"
-                  >
-                    {userProfile?.address2}
-                  </div>
-                </div>
-              </motion.div>
-              <motion.div
-                variants={varianFadeUpListItem}
-                className="grid md:grid-cols-3 gap-5"
-              >
-                <div>
-                  <label htmlFor="provice">Provice</label>
-                  <div
-                    className="bg-grey-base p-[10px] min-h-12 rounded-lg flex items-center overflow-hidden"
-                    id="provice"
-                  >
-                    {userProfile?.provice}
-                  </div>
-                </div>
-                <div>
-                  <label htmlFor="city">City</label>
-                  <div
-                    className="bg-grey-base p-[10px] min-h-12 rounded-lg flex items-center overflow-hidden"
-                    id="city"
-                  >
-                    {userProfile?.city}
-                  </div>
-                </div>
-                <div>
-                  <label htmlFor="postalCode">Postal Code</label>
-                  <div
-                    className="bg-grey-base p-[10px] min-h-12 rounded-lg flex items-center overflow-hidden"
-                    id="postalCode"
-                  >
-                    {userProfile?.postalCode}
-                  </div>
-                </div>
-              </motion.div>
-              <motion.div
-                variants={varianFadeUpListItem}
-                className="grid md:grid-cols-2 gap-5"
-              >
-                <div>
-                  <label htmlFor="country">Country</label>
-                  <div
-                    className="bg-grey-base p-[10px] min-h-12 rounded-lg flex items-center overflow-hidden"
-                    id="country"
-                  >
-                    {userProfile?.country}
-                  </div>
-                </div>
-                <div>
-                  <label htmlFor="phone">Phone</label>
-                  <div
-                    className="bg-grey-base p-[10px] min-h-12 rounded-lg flex items-center overflow-hidden"
-                    id="phone"
-                  >
-                    {userProfile?.phone}
-                  </div>
-                </div>
-              </motion.div>
-            </div>
+            <ShippingAddress data={userProfile} />
           </div>
           <div className="space-y-4">
             <motion.b variants={varianFadeUpListItem}>
@@ -262,33 +270,35 @@ const CartPage = (props: Props) => {
             </motion.b>
             <motion.div
               variants={varianFadeUpListItem}
-              className="grid md:grid-cols-12 max-md:gap-2 items-center"
+              className="grid md:grid-cols-12 gap-2 items-center"
             >
-              {/* <div className="md:col-span-2">
-              <p>$10</p>
-              <p className="text-sm text-grey-dark">Country Tax</p>
-            </div>
-            <div className="md:col-span-2">
-              <p>$280</p>
-              <p className="text-sm text-grey-dark">Product Insurance</p>
-            </div>
-            <div className="md:col-span-2">
-              <p>$580</p>
-              <p className="text-sm text-grey-dark">Ship to jakarta</p>
-            </div>
-            <div className="md:col-span-1">:</div> */}
+              <div className="md:col-span-2">
+                <p>Rp{formatToCurency(totalPrice)}</p>
+                <p className="text-sm text-grey-dark">Total Price</p>
+              </div>
+              <div className="md:col-span-2">
+                <p>Rp{totalOngkir ? formatToCurency(totalOngkir) : '-'}</p>
+                <p className="text-sm text-grey-dark">
+                  Ship to {userProfile?.city}
+                </p>
+              </div>
+              <div className="md:col-span-2">
+                <p>Rp1.000</p>
+                <p className="text-sm text-grey-dark">Service</p>
+              </div>
+              <div className="md:col-span-1">:</div>
               <div className="md:col-span-3">
                 <b className="text-success">
                   Rp
-                  {formatToCurency(totalPayment)}
+                  {formatToCurency(totalPrice + totalOngkir + serviceFee)}
                 </b>
                 <p className="text-sm text-grey-dark">Total Payment</p>
               </div>
-              <div className="md:col-span-7" />
               <div className="md:col-span-2 flex justify-end">
                 <Button
                   onClick={() => {
                     mutationCheckout.mutate(actionCheckout);
+                    // actionCheckout();
                   }}
                   className="bg-success text-white w-44"
                 >
@@ -303,7 +313,6 @@ const CartPage = (props: Props) => {
           </div>
         </motion.div>
       )}
-      {/* <TransactionSuccess /> */}
     </main>
   );
 };

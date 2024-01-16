@@ -14,6 +14,9 @@ import {
   varianFadeUpListContainer,
   varianFadeUpListItem,
 } from '@/utils/helper/variants';
+import Select from '@/components/Select/Select';
+import {provinces} from '@/utils/data/province';
+import {cities} from '@/utils/data/city';
 
 type Props = {};
 
@@ -33,8 +36,9 @@ const AccountPage = (props: Props) => {
   const {data: session}: {data: any} = useSession();
   const {fetchWithToken} = useFetch();
   const queryClient = useQueryClient();
+  const [selectedProviceId, setSelectedProviceId] = useState('');
 
-  const {data} = useQuery({
+  const {data, isLoading} = useQuery({
     queryKey: ['account'],
     queryFn: () =>
       fetchWithToken('/api/user/account').then((data) =>
@@ -43,6 +47,52 @@ const AccountPage = (props: Props) => {
   });
   const resData = data as accountDataType;
   // console.log(data);
+
+  const {data: dataProvice, isLoading: loadingProvice} = useQuery({
+    queryKey: ['proviceList'],
+    queryFn: () => {
+      return provinces.map((data) => {
+        return {name: data?.province, value: data?.province_id};
+      });
+      // fetchWithToken('/api/ongkir/province').then((data) =>
+      //   data.json().then((json) =>
+      //     json?.data?.map((data: any) => {
+      //       return {name: data?.province, value: data?.province_id};
+      //     })
+      //   )
+      // );
+    },
+  });
+
+  const {data: dataCity} = useQuery({
+    queryKey: ['cityList', selectedProviceId],
+    queryFn: async () => {
+      const query = cities.filter(
+        (data) => data.province_id == selectedProviceId
+      );
+
+      return query.map((data) => {
+        return {
+          name: data?.type + ' ' + data?.city_name,
+          value: data?.city_id,
+        };
+      });
+      // const query = selectedProviceId ? `?proviceId=${selectedProviceId}` : '';
+
+      // return await fetchWithToken('/api/ongkir/city' + query).then((data) =>
+      //   data.json().then((json) =>
+      //     json?.data?.map((data: any) => {
+      //       const res = {
+      //         name: data?.type + ' ' + data?.city_name,
+      //         value: data?.city_id,
+      //       };
+      //       return res;
+      //     })
+      //   )
+      // );
+    },
+  });
+  // console.log(dataCity);
 
   const mutation = useMutation({
     mutationKey: ['account'],
@@ -82,9 +132,11 @@ const AccountPage = (props: Props) => {
     const rawFormData = {
       address1: formData.get('address1') ?? '',
       address2: formData.get('address2') ?? '',
-      provice: formData.get('provice') ?? '',
-      city: formData.get('city') ?? '',
-      country: formData.get('country') ?? '',
+      provice: formData.get('provice[name]') ?? '',
+      proviceId: formData.get('provice[value]') ?? '',
+      city: formData.get('city[name]') ?? '',
+      cityId: formData.get('city[value]') ?? '',
+      country: formData.get('country[name]') ?? '',
       phone: formData.get('phone') ?? '',
       postalCode: formData.get('postalCode') ?? '',
       email: formData.get('email'),
@@ -149,15 +201,33 @@ const AccountPage = (props: Props) => {
             <div className="grid md:grid-cols-3 gap-5">
               <div>
                 <label htmlFor="provice">Provice</label>
-                <Input
+                {/* <Input
                   id="provice"
                   name="provice"
                   defaultValue={resData?.provice}
+                /> */}
+                <Select
+                  data={dataProvice ?? []}
+                  defaultValue={{name: resData?.provice}}
+                  name="provice"
+                  getValue={(val) => {
+                    setSelectedProviceId(val.value);
+                  }}
+                  isLoading={isLoading && loadingProvice}
                 />
               </div>
               <div>
                 <label htmlFor="city">City</label>
-                <Input id="city" name="city" defaultValue={resData?.city} />
+                {/* <Input id="city" name="city" defaultValue={resData?.city} /> */}
+                <Select
+                  data={selectedProviceId ? dataCity ?? [] : []}
+                  defaultValue={{name: resData?.city}}
+                  name="city"
+                  isLoading={isLoading}
+                  prerequiredMessage={
+                    selectedProviceId ? '' : 'Select provice first!'
+                  }
+                />
               </div>
               <div>
                 <label htmlFor="postalCode">Postal Code</label>
@@ -170,11 +240,16 @@ const AccountPage = (props: Props) => {
             </div>
             <div className="grid md:grid-cols-2 gap-5">
               <div>
-                <label htmlFor="country">Country</label>
-                <Input
+                <label>Country</label>
+                {/* <Input
                   id="country"
                   name="country"
                   defaultValue={resData?.country}
+                /> */}
+                <Select
+                  data={[{name: 'Indonesia', value: 'indonesia'}]}
+                  defaultValue={{name: 'Indonesia'}}
+                  name="country"
                 />
               </div>
               <div>

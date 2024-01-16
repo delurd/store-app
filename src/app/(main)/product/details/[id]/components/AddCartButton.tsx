@@ -9,6 +9,8 @@ import {toast} from 'react-toastify';
 
 type Props = {
   productId?: string;
+  quantity?: number;
+  isAvailable?: boolean;
 };
 
 const AddCartButton = (props: Props) => {
@@ -34,20 +36,28 @@ const AddCartButton = (props: Props) => {
   });
 
   const actionAddToCart = async () => {
-    if (status == 'unauthenticated') {
-      toast('Please signin first!', {autoClose: 3000});
-      return;
+    if (props.isAvailable) {
+      if (status == 'unauthenticated') {
+        toast('Please signin first!', {autoClose: 3000});
+        return;
+      }
+      mutation.mutate();
     }
-
-    mutation.mutate();
   };
 
   return (
-    <Button onClick={actionAddToCart} className="w-full bg-success text-white">
+    <Button
+      onClick={actionAddToCart}
+      className={`w-full text-white ${
+        props.isAvailable ? 'bg-success' : 'bg-grey-dark'
+      }`}
+    >
       {mutation.isPending ? (
         <Loader size="small" theme="light" />
-      ) : (
+      ) : props.isAvailable ? (
         'Add to Cart'
+      ) : (
+        'Out of Stock'
       )}
     </Button>
   );

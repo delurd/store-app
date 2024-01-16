@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { hash } from 'bcrypt'
-import { PrismaClient } from "@prisma/client";
+ 
 import { generateRandomId } from "../../action";
 
 

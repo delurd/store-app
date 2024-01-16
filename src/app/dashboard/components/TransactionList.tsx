@@ -28,7 +28,7 @@ const TransactionList = (props: Props) => {
   const query = '?page=' + page + (props.query ? `&${props.query}` : '');
   const isPaginate = props.isPaginate ?? true;
   const type = props.typeTransaction ?? 'sell';
-  const navigateUrl = `transactions/${type}/details/`;
+  const navigateUrl = `/dashboard/transactions/${type}/details/`;
 
   const {data, isLoading}: {data: any | undefined; isLoading: boolean} =
     useQuery({
@@ -54,7 +54,7 @@ const TransactionList = (props: Props) => {
           </div>
         ) : (
           <>
-            {listTransaction && listTransaction.length ? (
+            {listTransaction && listTransaction?.length ? (
               <motion.div
                 variants={varianFadeUpListContainer}
                 initial={'hidden'}
@@ -71,6 +71,7 @@ const TransactionList = (props: Props) => {
                             ? store.ProductsTransaction
                             : null
                         }
+                        status={store.shippingStatus}
                         buyer={store.transaction.buyer?.fullname}
                         date={store.transaction.createdAt}
                       />
@@ -82,7 +83,7 @@ const TransactionList = (props: Props) => {
           </>
         )}
       </>
-      {!isLoading && !listTransaction.length && (
+      {!isLoading && !listTransaction?.length && (
         <p className="text-center text-grey-dark p-10">No Transaction</p>
       )}
       <div className="mt-5">

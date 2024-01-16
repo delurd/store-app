@@ -1,6 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+
 import { NextRequest, NextResponse } from "next/server";
-const prisma = new PrismaClient()
+import { prisma } from "@/app/api/action";
 
 export const GET = async (req: NextRequest) => {
 
@@ -18,7 +18,7 @@ export const GET = async (req: NextRequest) => {
     if (userId) {
         try {
             const res = await prisma.storeTransaction.findMany({
-                where: { ProductsTransaction: { every: { product: { sellerId: userId } } } },
+                where: { transaction: { paymentStatus: 'success' }, ProductsTransaction: { every: { product: { sellerId: userId } } } },
                 include: {
                     transaction: {
                         select: {

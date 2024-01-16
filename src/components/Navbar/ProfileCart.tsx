@@ -31,7 +31,7 @@ const ProfileCart = (props: Props) => {
         href={'/dashboard'}
         className="flex items-center hover:bg-base rounded-full"
       >
-        <Image
+        <img
           alt=""
           src="/images/profile.png"
           className="w-10 h-10 object-cover"
@@ -39,7 +39,7 @@ const ProfileCart = (props: Props) => {
         <p className="px-3">Hi, {fullname?.split(' ')[0]}</p>
       </Link>
       <Link href={'/cart'} className="relative hover:bg-base p-2 rounded-full">
-        <Image alt="" src="/icons/shopping.svg" />
+        <img alt="" src="/icons/shopping.svg" />
         {cartData?.length ? (
           <div className="absolute top-0 right-0 translate-x-1/2 flex-center rounded-full aspect-square px-1.5 text-[9px] font-semibold text-white bg-success">
             {cartData?.length}

@@ -1,6 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+
 import { NextRequest, NextResponse } from "next/server";
-const prisma = new PrismaClient()
+import { prisma } from "@/app/api/action";
 
 export const GET = async (req: NextRequest, context: { params: { id: string } }) => {
     const userId = req.headers.get('Authorization')
@@ -34,6 +34,7 @@ export const GET = async (req: NextRequest, context: { params: { id: string } })
                     }
                 }
             })
+
 
             return NextResponse.json({ message: 'success', data: res })
         } catch (error) {

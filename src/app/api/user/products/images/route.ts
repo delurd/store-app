@@ -1,10 +1,10 @@
 import { generateCustomId } from "@/app/api/action";
-import { PrismaClient } from "@prisma/client";
+ 
 import { rmSync, unlinkSync } from "fs";
 import { writeFile } from "fs/promises";
 import { NextRequest, NextResponse } from "next/server";
 import { join } from "path";
-const prisma = new PrismaClient()
+import { prisma } from "@/app/api/action";
 
 export const GET = async (req: NextRequest) => {
     const body = await req.json()
@@ -69,7 +69,6 @@ export const POST = async (req: NextRequest) => {
 
 export const DELETE = async (req: NextRequest) => {
     const body = await req.json()
-
     const id = body?.id ?? ''
 
     if (id) {
@@ -81,7 +80,6 @@ export const DELETE = async (req: NextRequest) => {
                 rmSync(process.cwd() + '\\public' + res?.path.replaceAll('/', '\\'))
             } catch (error) {
             }
-            // console.log('HAPUS NIH');
 
             return NextResponse.json({ message: 'success' })
         } catch (error) {

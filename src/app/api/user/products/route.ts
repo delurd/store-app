@@ -1,10 +1,9 @@
-import { PrismaClient } from "@prisma/client";
+ 
 import { writeFile } from "fs/promises";
 import { NextRequest, NextResponse } from "next/server";
 import { join } from "path";
 import { generateCustomId } from "../../action";
-
-const prisma = new PrismaClient()
+import { prisma } from "@/app/api/action";
 
 export const GET = async (req: NextRequest) => {
     const searchParams = req.nextUrl.searchParams
@@ -36,8 +35,11 @@ export const POST = async (req: NextRequest) => {
     const category = bodyForm.get('category') as string ?? ''
     const description = bodyForm.get('description') as string ?? ''
     const images = bodyForm.getAll('image') as File[] ?? []
-    // console.log(images);
-
+    const getWeight = bodyForm.get('weight') as string
+    const getQuantity = bodyForm.get('quantity') as string
+    const weight = getWeight ? parseInt(getWeight) : 500
+    const quantity = getQuantity ? parseInt(getQuantity) : 1
+    // console.log(quantity);
 
     if (name && price && category && description) {
         const slug = name.replaceAll(' ', '-') + '-' + Math.random().toString(36).substring(2, 7)
@@ -62,12 +64,13 @@ export const POST = async (req: NextRequest) => {
             // console.log(imagesPath);
 
             try {
-                const res = await prisma.products.create({ data: { name, price, category, description, slug, thumbnailPath: imagesPath[0], sellerId: userId, storeId: storeId.id } })
+                const res = await prisma.products.create({ data: { name, price, category, description, weight, quantity, slug, thumbnailPath: imagesPath[0], sellerId: userId, storeId: storeId.id } })
 
                 await prisma.productsImages.createMany({ data: imagesPath.map((path) => { return { path, productId: res.id } }) })
 
                 return NextResponse.json({ message: 'success' })
             } catch (error) {
+                // console.log(error);
             }
         }
 
@@ -82,25 +85,32 @@ export const PUT = async (req: NextRequest) => {
     const id = body.id ?? ''
     const name = body.name as string
     const price = body.price
+    const weight = parseInt(body.weight) ?? 500
+    const quantity = parseInt(body.quantity) ?? 1
     const category = body.category
     const description = body.description
     const thumbnailPath = body.thumbnailPath
 
     const userId = req.headers.get('Authorization') ?? ''
     // console.log('UPDATE PRODUCT');
-    // console.log(body);
 
     let error = ''
 
     if (userId) {
         if (id && name && price && category && description) {
-            const slug = name.replaceAll(' ', '-') + '-' + Math.random().toString(36).substring(2, 7)
 
             try {
-                const res = await prisma.products.update({ where: { id, sellerId: userId }, data: { name, price, category, description, thumbnailPath, slug } })
+                const getproduct = await prisma.products.findUnique({ where: { id }, select: { slug: true } })
+                const slugId = getproduct?.slug.split('-').find((val, idx, arr) => idx == arr.length - 1)
+
+                const sluging = name.replaceAll(' ', '-') + '-' + slugId
+
+
+                const res = await prisma.products.update({ where: { id, sellerId: userId }, data: { name, price, category, weight, quantity, description, thumbnailPath, slug: sluging } })
 
                 return NextResponse.json({ message: 'success', data: res })
             } catch (error) {
+                error = error
             }
         } else
             error = 'Please fill all data'

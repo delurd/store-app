@@ -21,6 +21,8 @@ export type ProductDataType = {
     id?: string;
     name?: string;
     price?: string;
+    weight?: number;
+    quantity?: number;
     published?: boolean;
     sellerId?: string;
     slug?: string;
@@ -29,6 +31,7 @@ export type ProductDataType = {
     thumbnailPath?: string
     ProductsImages?: ProductImageType[]
     store?: StoreDataType
+    seller?: { UserProfile: UserAccountType }
 };
 
 export type ProductViewType = {
@@ -41,20 +44,22 @@ export type ProductViewType = {
 
 export type CartDataType = {
     id?: string,
-    product?: ProductDataType
+    product?: ProductDataType,
     productId?: string,
-    userId?: string
+    userId?: string,
 }
 
 export type UserAccountType = {
     address1?: string
     address2?: string
     city?: string
+    cityId?: string
+    provice?: string
+    proviceId?: string
     country?: string
     id?: string
     phone?: string
     postalCode?: string
-    provice?: string
     userId?: string
 }
 

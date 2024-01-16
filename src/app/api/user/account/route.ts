@@ -1,6 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+ 
 import { NextRequest, NextResponse } from "next/server";
-const prisma = new PrismaClient()
+import { prisma } from "@/app/api/action";
+
 
 
 export const GET = async (req: NextRequest) => {
@@ -26,8 +27,10 @@ export const PUT = async (req: NextRequest) => {
     const address1 = body?.address1
     const address2 = body?.address2
     const city = body?.city
+    const cityId = body?.cityId
     const postalCode = body?.postalCode
     const provice = body?.provice
+    const proviceId = body?.proviceId
     const country = body?.country
     const phone = body?.phone
 
@@ -37,7 +40,7 @@ export const PUT = async (req: NextRequest) => {
 
     if (email && fullname) {
         try {
-            const res = await prisma.userProfile.update({ where: { userId }, data: { address1, address2, provice, city, country, phone, postalCode } })
+            const res = await prisma.userProfile.update({ where: { userId }, data: { address1, address2, provice, proviceId, city, cityId, country, phone, postalCode } })
             // await prisma.user.update({ where: { id: userId }, data: { email, fullname } })
 
             return NextResponse.json({ message: 'success', data: res })

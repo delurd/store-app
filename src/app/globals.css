@@ -30,6 +30,10 @@
   }
 }
 
+/* * {
+  border: 1px solid black;
+} */
+
 body {
 }
 
@@ -38,7 +42,7 @@ body {
 }
 
 .container-base {
-  @apply max-w-6xl mx-auto px-10  max-md:px-7;
+  @apply max-w-6xl w-full mx-auto px-10  max-md:px-7;
 }
 
 .navbar ul li.active {

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Navigation from './components/Navigation';
 import {Suspense} from 'react';
-import Loading from './loading';
+import Loading from './_loading';
 
 type Props = {};
 

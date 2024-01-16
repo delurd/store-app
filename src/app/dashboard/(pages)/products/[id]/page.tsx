@@ -16,11 +16,12 @@ import ModalAddProductImage from './ModalAddProductImage';
 import {toast} from 'react-toastify';
 import Loader from '@/components/Loader/Loader';
 import NotFound from '@/components/Errors/NotFound';
-import Image from 'next/image';
+import {useRouter} from 'next/navigation';
 
 type Props = {};
 
 const ProductDetail = ({params}: {params: {id: string}}) => {
+  const router = useRouter();
   const {fetchWithToken, fetchData} = useFetch();
   const queryClient = useQueryClient();
   const title = params.id
@@ -47,7 +48,7 @@ const ProductDetail = ({params}: {params: {id: string}}) => {
   // console.log(dataProduct);
   useEffect(() => {
     !imagesPath.length && setImagesPath(dataProduct?.ProductsImages ?? []);
-  }, [dataProduct]);
+  }, [dataProduct?.ProductsImages?.length]);
 
   const mutation = useMutation({
     mutationFn: (body: string) =>
@@ -68,6 +69,8 @@ const ProductDetail = ({params}: {params: {id: string}}) => {
       id: dataProduct?.id ?? '',
       name: formData.get('name') ?? '',
       price: formData.get('price') ?? '',
+      weight: formData.get('weight') ?? 500,
+      quantity: formData.get('quantity') ?? 1,
       category: formData.get('category[name]') ?? '',
       description: formData.get('description') ?? '',
       thumbnailPath: thumbnail,
@@ -85,21 +88,71 @@ const ProductDetail = ({params}: {params: {id: string}}) => {
     )
       .then((res) => {
         setImagesPath((prev) => prev.filter((image) => image?.path !== path));
-        // console.log('success');
+
+        queryClient.setQueryData(
+          ['products', params.id],
+          (old: ProductDataType) => {
+            const productImage = old.ProductsImages ?? [];
+            const images: ProductImageType[] = productImage.filter(
+              (data) => data.path !== path
+            );
+
+            return {...old, ProductsImages: images};
+          }
+        );
       })
       .catch((err) => {
-        // console.log(err);
         toast('Failed delete image!');
       });
   };
 
-  if (isLoading) return <></>;
+  const actionUpdateThumbnail = async (path: string) => {
+    await fetchWithToken(
+      '/api/user/products/details/' + params.id + '/thumbnail',
+      'PUT',
+      JSON.stringify({thumbnailPath: path})
+    ).then(async (res) => {
+      const json = await res.json();
+
+      queryClient.setQueryData(['products', params.id], json.data);
+    });
+  };
+
+  const mutationUpdateStatusPublish = useMutation({
+    mutationFn: async () =>
+      fetchWithToken(
+        '/api/user/products/details/' + params.id + '/statusPublish',
+        'PUT'
+      ).then(async (res) => await res.json().then((json) => json.data)),
+    onSuccess: async (res) => {
+      queryClient.setQueryData(['products', params.id], res);
+    },
+  });
+
+  const actionDeleteProduct = async () => {
+    await fetchWithToken('/api/user/products/details/' + params.id, 'DELETE')
+      .then((res) => {
+        toast('Product deleted');
+        router.replace('/dashboard/products');
+      })
+      .catch((err) => {
+        // console.log(err);
+        toast('Failed to delete product!');
+      });
+  };
+
+  if (isLoading)
+    return (
+      <div className="h-full flex-center">
+        <Loader size="medium" />
+      </div>
+    );
   if (!dataProduct) return <NotFound />;
 
   return (
     <div>
       <Header
-        title={title}
+        title={dataProduct?.name}
         description={
           <p>
             Product <b>Details</b>
@@ -127,6 +180,30 @@ const ProductDetail = ({params}: {params: {id: string}}) => {
                 id="price"
                 name="price"
                 defaultValue={dataProduct?.price}
+              />
+            </div>
+          </div>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <label htmlFor="name">Weight (gram)</label>
+              <Input
+                required
+                min={0}
+                type="number"
+                id="weight"
+                name="weight"
+                defaultValue={dataProduct?.weight}
+              />
+            </div>
+            <div>
+              <label htmlFor="price">Quantity</label>
+              <Input
+                required
+                min={0}
+                type="number"
+                id="quantity"
+                name="quantity"
+                defaultValue={dataProduct?.quantity}
               />
             </div>
           </div>
@@ -174,9 +251,10 @@ const ProductDetail = ({params}: {params: {id: string}}) => {
                 className="w-full h-full relative cursor-default group"
                 onClick={() => {
                   setThumbnail(image.path ?? '');
+                  actionUpdateThumbnail(image.path ?? '');
                 }}
               >
-                <Image
+                <img
                   alt={'Product-' + idx}
                   src={image.path ? image.path : ''}
                   className="w-full h-full object-cover hover:object-contain rounded-lg"
@@ -211,6 +289,27 @@ const ProductDetail = ({params}: {params: {id: string}}) => {
           }}
         >
           Add Photo
+        </Button>
+      </div>
+      <div className="my-10">
+        <Button
+          className={
+            'border hover:text-white duration-200 w-[180px] ' +
+            (dataProduct.published
+              ? ' border-alert text-alert hover:bg-alert'
+              : ' border-success text-success hover:bg-success')
+          }
+          onClick={() => {
+            mutationUpdateStatusPublish.mutate();
+          }}
+        >
+          {mutationUpdateStatusPublish.isPending ? (
+            <Loader size="small" />
+          ) : dataProduct.published ? (
+            'Hide Product'
+          ) : (
+            'Publish Product'
+          )}
         </Button>
       </div>
       <ModalAddProductImage
