@@ -11,7 +11,7 @@ import {authOptions} from './api/auth/[...nextauth]/action';
 const inter = Inter({subsets: ['latin']});
 
 export const metadata: Metadata = {
-  title: 'Allstore',
+  title: 'Storein',
   description: 'Place to sell and buy various goods',
 };
 
