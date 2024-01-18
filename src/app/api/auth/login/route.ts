@@ -12,15 +12,16 @@ export const POST = async (req: NextRequest) => {
     // console.log(body);
 
     try {
-        const res = await prisma.user.findUnique({ where: { email } })
+        const res = await prisma.user.findUnique({ where: { email }, include: { Store: { select: { id: true } } } })
         const pass = res?.password
         const id = res?.id
         const fullname = res?.fullname
+        const storeId = res?.Store?.id
         // console.log(res);
 
         const hasss = await compare(password, pass!);
         if (hasss) {
-            return NextResponse.json({ message: 'success', data: { id, fullname, email } })
+            return NextResponse.json({ message: 'success', data: { id, fullname, email, storeId } })
         }
     } catch (error) {
     }

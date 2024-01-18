@@ -11,6 +11,7 @@ import {motion} from 'framer-motion';
 import React, {useState} from 'react';
 import {toast} from 'react-toastify';
 import ProductItemTransaction from '../(pages)/transactions/components/ProductItemTransaction';
+import Image from 'next/image';
 
 type Props = {
   data?: any;
@@ -20,6 +21,7 @@ const BillingDetail = (props: Props) => {
   const {fetchWithToken} = useFetch();
   const queryClient = useQueryClient();
   const [isSuccess, setIsSuccess] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState('');
 
   const mutation = useMutation({
     mutationFn: async (paymentStatus?: 'success' | 'canceled') =>
@@ -27,16 +29,17 @@ const BillingDetail = (props: Props) => {
         '/api/user/transactions/payment',
         'PUT',
         JSON.stringify({paymentStatus, transactionId: props.data?.id ?? ''})
-      ),
+      ).then(async (res) => await res.json().then((json) => json.data)),
     onSuccess: async (data) => {
+      // console.log(data);
       queryClient.setQueryData(['bill', '1'], (old: any[]) =>
         old.filter((data) => data?.id !== props.data?.id)
       );
+      setPaymentStatus(data?.paymentStatus);
       setIsSuccess(true);
-      toast('Payment Success');
     },
     onError: async (data) => {
-      toast('Payment Failed!');
+      toast('Failed to Process!');
     },
   });
 
@@ -47,37 +50,45 @@ const BillingDetail = (props: Props) => {
           initial={'hidden'}
           animate={'show'}
           variants={varianFadeUpListContainer}
-          className="flex-center flex-col gap-2 h-[230px]"
+          className="flex-center flex-col gap-2 h-full text-center"
         >
-          <motion.div variants={varianFadeUpListItem} className="flex-center">
-            <svg
-              width="40"
-              height="40"
-              viewBox="0 0 80 80"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M23.55 36.85L38.075 51.375L72.55 16.9"
-                stroke="#29A867"
-                strokeWidth="7"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M57.2691 9.55C52.1736 6.65395 46.28 5 40 5C20.67 5 5 20.67 5 40C5 59.33 20.67 75 40 75C59.33 75 75 59.33 75 40C75 38.458 74.9003 36.9393 74.7069 35.45"
-                stroke="#29A867"
-                strokeWidth="7"
-                strokeLinecap="round"
-              />
-            </svg>
+          <motion.div
+            initial={{y: 50, opacity: 0}}
+            animate={{y: 0, opacity: 100}}
+            transition={{velocity: -1000}}
+          >
+            <Image
+              alt="Bag-icon"
+              src="/icons/bag.svg"
+              width={120}
+              height={120}
+              className="mb-10"
+            />
           </motion.div>
-          <motion.h2 variants={varianFadeUpListItem} className="text-success">
-            Success
-          </motion.h2>
+          <motion.h1
+            initial={{y: 50, opacity: 0}}
+            animate={{y: 0, opacity: 100}}
+            transition={{delay: 0.1, velocity: 100}}
+            className="text-3xl mb-7"
+          >
+            {paymentStatus == 'canceled'
+              ? 'Transaction Canceled!'
+              : 'Transaction Processed!'}
+          </motion.h1>
+          <motion.p
+            initial={{y: 50, opacity: 0}}
+            animate={{y: 0, opacity: 100}}
+            transition={{delay: 0.2, velocity: 100}}
+            className="mb-14"
+          >
+            {paymentStatus == 'canceled'
+              ? ''
+              : `Terimakasih sudah melakukan pembayaran, kami akan menginformasikan
+              resi secepat mungkin!`}
+          </motion.p>
         </motion.div>
       ) : (
-        <div className="space-y-5 relative">
+        <div className="space-y-5 relative h-full">
           <div className="space-y-5">
             <div className="space-y-2">
               <p className="text-warning">Payment Code</p>
@@ -130,7 +141,7 @@ const BillingDetail = (props: Props) => {
               )}
             </div>
           </div>
-          <div className="flex justify-between sticky bg-white p-2 rounded-xl bottom-0">
+          <div className="flex justify-between absolute bg-white p-2 rounded-xl bottom-0 w-full">
             <Button
               className="max-h-max text-grey-dark border border-transparent duration-200 hover:text-alert hover:border-alert"
               onClick={() => {

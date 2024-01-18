@@ -1,5 +1,4 @@
 // 'use client';
-import CustomerReview from '@/components/CustomerReview/CustomerReviewItem';
 import {host} from '@/utils/variables';
 import Link from 'next/link';
 import React from 'react';
@@ -8,11 +7,17 @@ import {ProductDataType} from '@/utils/interfaces/globalTypes';
 import ImagesView from './components/ImagesView';
 import AddCartButton from './components/AddCartButton';
 import {formatToCurency} from '@/utils/helper/formatNumberToCurency';
+import CustomerReviewList from '@/components/CustomerReview/CustomerReviewList';
 
 type Props = {};
 
 const getData = async (slug: string) => {
-  return await fetch(host + '/api/products/details/' + slug)
+  return await fetch(host + '/api/products/details/' + slug, {
+    // cache: 'no-store',
+    next: {
+      tags: ['product'],
+    },
+  })
     .then((res) => {
       if (!res.ok) {
         throw res;
@@ -56,7 +61,10 @@ const ProductDetailPage = async ({params}: {params: {id: string}}) => {
         <div className="grid lg:grid-cols-12 gap-5">
           <div className="md:col-span-8">
             <div className="space-y-1 mb-2">
-              <h1>{data.name}</h1>
+              <div className="flex justify-between items-center">
+                <h1>{data.name}</h1>
+                <p className="text-grey-secondary">Stock {data.quantity}</p>
+              </div>
               <p className="text-grey-secondary">By {data.store?.name}</p>
               <h3 className="font-medium text-warning">
                 Rp{formatToCurency(data.price ?? 0)}
@@ -69,21 +77,15 @@ const ProductDetailPage = async ({params}: {params: {id: string}}) => {
           </div>
           <div className="md:col-span-2 max-lg:order-first max-lg:flex max-lg:justify-end ">
             <AddCartButton
-              isAvailable={data.quantity ? data.quantity > 0 : true}
+              isAvailable={data?.quantity ? data?.quantity > 0 : false}
               productId={data.id}
+              storeId={data.store?.id}
             />
           </div>
         </div>
         <div className="md:w-2/3">
           <div className="space-y-4">
-            <h3>Customer Review (3)</h3>
-            <div className="space-y-4 max-h-[500px] overflow-y-auto">
-              {Array(5)
-                .fill('')
-                .map((val, idx) => (
-                  <CustomerReview key={idx} />
-                ))}
-            </div>
+            <CustomerReviewList productId={data.id} />
           </div>
         </div>
       </div>

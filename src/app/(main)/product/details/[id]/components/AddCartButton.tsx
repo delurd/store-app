@@ -11,10 +11,15 @@ type Props = {
   productId?: string;
   quantity?: number;
   isAvailable?: boolean;
+  storeId?: string;
 };
 
 const AddCartButton = (props: Props) => {
-  const {status} = useSession();
+  const {
+    data: dataUser,
+    status,
+  }: {data: any; status: 'authenticated' | 'loading' | 'unauthenticated'} =
+    useSession();
   const {fetchWithToken} = useFetch();
   const queryClient = useQueryClient();
 
@@ -45,21 +50,24 @@ const AddCartButton = (props: Props) => {
     }
   };
 
+  if (props.storeId == dataUser?.user?.storeId) return <></>;
   return (
-    <Button
-      onClick={actionAddToCart}
-      className={`w-full text-white ${
-        props.isAvailable ? 'bg-success' : 'bg-grey-dark'
-      }`}
-    >
-      {mutation.isPending ? (
-        <Loader size="small" theme="light" />
-      ) : props.isAvailable ? (
-        'Add to Cart'
-      ) : (
-        'Out of Stock'
-      )}
-    </Button>
+    <>
+      <Button
+        onClick={actionAddToCart}
+        className={`w-full text-white ${
+          props.isAvailable ? 'bg-success' : 'bg-grey-dark'
+        }`}
+      >
+        {mutation.isPending ? (
+          <Loader size="small" theme="light" />
+        ) : props.isAvailable ? (
+          'Add to Cart'
+        ) : (
+          'Out of Stock'
+        )}
+      </Button>
+    </>
   );
 };
 

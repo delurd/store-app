@@ -14,6 +14,9 @@ import NotFound from '@/components/Errors/NotFound';
 import Loader from '@/components/Loader/Loader';
 import {statusShippingType} from '@/app/dashboard/action';
 import {formatToCurency} from '@/utils/helper/formatNumberToCurency';
+import Modal from '@/components/Modal/Modal';
+import ButtonCloseModal from '@/components/Modal/ButtonCloseModal';
+import ModalContentReview from '../../../components/ModalContentReview';
 
 type Props = {};
 
@@ -32,6 +35,8 @@ const TransactionDetailsBuy = ({params}: {params: {id: string}}) => {
   const queryClient = useQueryClient();
   const {fetchWithToken} = useFetch();
   const {data}: {data: any} = useSession();
+  const [isShowModalReview, setIsShowModalReview] = useState(false);
+
   const mutationStatus = useMutation({
     mutationFn: async (id: string) =>
       fetchWithToken(
@@ -136,7 +141,6 @@ const TransactionDetailsBuy = ({params}: {params: {id: string}}) => {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
               <div>
                 <p className="text-grey-dark mb-2">Products</p>
-                {/* <div className="w-full aspect-square bg-grey-base rounded-lg"></div> */}
                 <div className="flex flex-col gap-2">
                   {dataTransaction?.ProductsTransaction.map((data, idx) => (
                     <ProductItemTransaction key={idx} product={data.product} />
@@ -261,10 +265,33 @@ const TransactionDetailsBuy = ({params}: {params: {id: string}}) => {
                 </Button>
               )}
               {dataTransaction?.shippingStatus == 'success' && (
-                <Button className="bg-success text-white px-12">Review</Button>
+                <Button
+                  className="bg-success text-white px-12"
+                  onClick={() => {
+                    setIsShowModalReview(true);
+                  }}
+                >
+                  Review
+                </Button>
               )}
             </div>
           </div>
+          <Modal
+            onClose={() => {
+              setIsShowModalReview(false);
+            }}
+            show={isShowModalReview}
+            className="bg-white rounded-lg "
+          >
+            <div className="flex justify-between items-center p-5">
+              <h1>Review</h1>
+              <ButtonCloseModal onClick={() => setIsShowModalReview(false)} />
+            </div>
+            <hr />
+            <ModalContentReview
+              productList={dataTransaction?.ProductsTransaction}
+            />
+          </Modal>
         </>
       )}
     </div>

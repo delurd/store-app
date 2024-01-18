@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { hash } from 'bcrypt'
- 
-import { generateRandomId } from "../../action";
+
+import { generateRandomId, prisma } from "../../action";
 
 
 export const POST = async (req: NextRequest) => {
@@ -16,8 +16,6 @@ export const POST = async (req: NextRequest) => {
 
     const openStatus = storeOpenStatus == 1 ? true : false
     const id = generateRandomId()
-
-    const prisma = new PrismaClient()
 
     if (email && password) {
         const cekUniqueEmail = await prisma.user.findUnique({ where: { email } })

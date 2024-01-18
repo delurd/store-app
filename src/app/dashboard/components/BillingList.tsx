@@ -11,6 +11,7 @@ import {
   varianFadeUpListItem,
 } from '@/utils/helper/variants';
 import {formatToCurency} from '@/utils/helper/formatNumberToCurency';
+import ButtonCloseModal from '@/components/Modal/ButtonCloseModal';
 
 type Props = {};
 
@@ -98,17 +99,10 @@ const BillingList = (props: Props) => {
       >
         <div className="flex justify-between items-center p-5">
           <h1>Billing</h1>
-          <button
-            onClick={() => {
-              setIsShowModal(false);
-            }}
-            className="aspect-square w-10 rounded-md text-grey hover:text-grey-dark"
-          >
-            ✕
-          </button>
+          <ButtonCloseModal onClick={() => setIsShowModal(false)} />
         </div>
         <hr />
-        <div className="max-h-[500px] overflow-y-auto p-5 relative">
+        <div className="h-[500px] overflow-y-auto p-5 relative">
           <BillingDetail data={selectedBill} />
         </div>
       </Modal>

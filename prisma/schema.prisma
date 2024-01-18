@@ -95,14 +95,6 @@ model ProductsImages {
   product   Products @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
-model CustomerReview {
-  id        String @id @default(uuid())
-  name      String
-  review    String
-  userId    String
-  productId String
-}
-
 model UserCart {
   id        String   @id @default(uuid())
   userId    String
@@ -162,4 +154,14 @@ model ProductsTransaction {
   productId          String
   product            Products         @relation(fields: [productId], references: [id])
   createdAt          DateTime         @default(now())
+  CustomerReview     CustomerReview?
+}
+
+model CustomerReview {
+  id                   String              @id @default(uuid())
+  name                 String
+  review               String
+  userId               String
+  productTransactionId String              @unique
+  productTransaction   ProductsTransaction @relation(fields: [productTransactionId], references: [id], onDelete: Cascade)
 }

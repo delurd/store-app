@@ -219,7 +219,7 @@ const ProductDetail = ({params}: {params: {id: string}}) => {
                 selectWidth="w-full"
                 defaultValue={{name: dataProduct?.category}}
                 getValue={(val) => {
-                  console.log(val);
+                  // console.log(val);
                 }}
                 name="category"
               />

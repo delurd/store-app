@@ -12,7 +12,7 @@ type Props = {
 const ProductCard = (props: Props) => {
   return (
     <Link href={'products/' + props.slug}>
-      <div className="p-3 bg-white rounded-lg max-w-max hover:shadow-xl duration-300 cursor-pointer">
+      <div className="p-3 bg-white rounded-lg hover:shadow-xl duration-300 cursor-pointer w-[238px] overflow-hidden h-full">
         <img
           src={props.imagePath ? props.imagePath : '/images/noimage.png'}
           alt="product-image"

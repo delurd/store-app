@@ -23,7 +23,9 @@ type Props = {
 };
 
 const Select = (props: Props) => {
-  const [selectedItem, setSelectedItem] = useState<any>({});
+  const [selectedItem, setSelectedItem] = useState<any>(
+    props.defaultValue ?? {}
+  );
 
   useEffect(() => {
     props.value?.name && setSelectedItem(props.value);

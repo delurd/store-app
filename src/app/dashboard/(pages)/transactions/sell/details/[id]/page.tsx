@@ -6,7 +6,6 @@ import {
   UserAccountType,
 } from '@/utils/interfaces/globalTypes';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {useSession} from 'next-auth/react';
 import Link from 'next/link';
 import React, {useEffect, useState} from 'react';
 import ProductItemTransaction from '../../../components/ProductItemTransaction';
@@ -36,9 +35,8 @@ type transactionDetailBuyResponseType = {
 };
 
 const TransactionDetailsSell = ({params}: {params: {id: string}}) => {
-  const queryClient = useQueryClient;
+  const queryClient = useQueryClient();
   const {fetchWithToken} = useFetch();
-  const {data}: {data: any} = useSession();
   const [shippingStatus, setShippingStatus] = useState('Pending');
   const [receiptCode, setReceiptCode] = useState('');
 
@@ -62,6 +60,9 @@ const TransactionDetailsSell = ({params}: {params: {id: string}}) => {
       setShippingStatus(
         statusShippingType[data.shippingStatus as 'pending' | 'shipping']
       );
+      queryClient.setQueryData(['transactionDetail', params.id], (old: any) => {
+        return {...old, shippingStatus: data?.shippingStatus};
+      });
       toast('success');
     },
   });
@@ -82,17 +83,11 @@ const TransactionDetailsSell = ({params}: {params: {id: string}}) => {
       setReceiptCode(dataRes?.shippingReceipt));
   }, [dataRes]);
 
-  // console.log(dataRes);
-
   const dataTransaction = dataRes as transactionDetailBuyResponseType;
-
-  const storeName = dataTransaction?.ProductsTransaction.length
-    ? dataTransaction?.ProductsTransaction[0].product.store?.name
-    : '';
   const buyerName = dataTransaction?.transaction.buyer.fullname;
   const buyerProfile = dataTransaction?.transaction.buyer.UserProfile;
 
-  // console.log(shippingStatus);
+  // console.log(dataTransaction);
 
   return (
     <div className="min-h-full flex flex-col">
@@ -200,7 +195,8 @@ const TransactionDetailsSell = ({params}: {params: {id: string}}) => {
               <p className="text-grey-dark">Shipping Status</p>
 
               <div className="flex max-md:flex-col items-center gap-4">
-                {shippingStatus == 'Canceled' || shippingStatus == 'Success' ? (
+                {shippingStatus == 'Canceled' ||
+                dataTransaction?.shippingStatus == 'success' ? (
                   <p
                     className={
                       'mr-5 ' +
@@ -240,12 +236,11 @@ const TransactionDetailsSell = ({params}: {params: {id: string}}) => {
                 ) : null}
               </div>
             </div>
-            <div className="flex justify-between gap-2">
-              {(shippingStatus == 'Pending' ||
-                shippingStatus == 'Shipping') && (
-                <>
+            <div className="flex justify-end gap-2">
+              <>
+                {dataTransaction?.shippingStatus == 'pending' ? (
                   <Button
-                    className="text-alert border border-alert hover:bg-alert hover:text-white duration-200 px-12"
+                    className="text-alert hover:bg-alert hover:text-white duration-200 px-12"
                     onClick={() => {
                       mutationStatus.mutate({
                         status: 'canceled',
@@ -259,29 +254,32 @@ const TransactionDetailsSell = ({params}: {params: {id: string}}) => {
                       'Reject'
                     )}
                   </Button>
-                  {/* <div></div> */}
-                  <Button
-                    className="bg-success text-white px-12"
-                    onClick={() => {
-                      if (shippingStatus == 'Shipping' && !receiptCode) {
-                        toast('Receipt required!');
-                        return;
-                      }
-                      mutationStatus.mutate({
-                        status: shippingStatus.toLowerCase(),
-                        id: dataTransaction?.id,
-                        receipt: receiptCode,
-                      });
-                    }}
-                  >
-                    {mutationStatus.isPending ? (
-                      <Loader size="small" theme="light" />
-                    ) : (
-                      'Save Now'
-                    )}
-                  </Button>
-                </>
-              )}
+                ) : null}
+                <div></div>
+                {dataTransaction?.shippingStatus !== 'canceled' &&
+                  dataTransaction?.shippingStatus !== 'success' && (
+                    <Button
+                      className="bg-success text-white px-12"
+                      onClick={() => {
+                        if (shippingStatus == 'Shipping' && !receiptCode) {
+                          toast('Receipt required!');
+                          return;
+                        }
+                        mutationStatus.mutate({
+                          status: shippingStatus.toLowerCase(),
+                          id: dataTransaction?.id,
+                          receipt: receiptCode,
+                        });
+                      }}
+                    >
+                      {mutationStatus.isPending ? (
+                        <Loader size="small" theme="light" />
+                      ) : (
+                        'Save Now'
+                      )}
+                    </Button>
+                  )}
+              </>
             </div>
           </div>
         </>

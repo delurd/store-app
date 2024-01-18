@@ -20,7 +20,7 @@ const TransactionSuccess = (props: Props) => {
           animate={{y: 0, opacity: 100}}
           transition={{velocity: -1000}}
         >
-          <img alt='Bag-icon' src="/icons/bag.svg" className="mb-10" />
+          <img alt="Bag-icon" src="/icons/bag.svg" className="mb-10" />
         </motion.div>
         <motion.h1
           initial={{y: 50, opacity: 0}}
@@ -28,7 +28,8 @@ const TransactionSuccess = (props: Props) => {
           transition={{delay: 0.1, velocity: 100}}
           className="text-3xl mb-7"
         >
-          Transaction Processed!
+          {/* Transaction Processed! */}
+          Transaction is Waiting!
         </motion.h1>
         <motion.p
           initial={{y: 50, opacity: 0}}
@@ -36,29 +37,37 @@ const TransactionSuccess = (props: Props) => {
           transition={{delay: 0.2, velocity: 100}}
           className="mb-14"
         >
-          Silahkan tunggu konfirmasi email dari kami dan kami akan
-          menginformasikan resi secepat mungkin!
+          {/* Silahkan tunggu konfirmasi email dari kami dan kami akan
+          menginformasikan resi secepat mungkin! */}
+          Silahkan lakukan pembayaran sesuai tagihan yang diterima, agar
+          transaksi dapat segera diproses!
         </motion.p>
-        <motion.div
-          initial={{y: 50, opacity: 0}}
-          animate={{y: 0, opacity: 100}}
-          transition={{delay: 0.3, velocity: 100}}
-        >
-          <Link href={'/dashboard'}>
-            <Button className="bg-success text-white mb-4">My Dashboard</Button>
-          </Link>
-        </motion.div>
-        <motion.div
-          initial={{y: 50, opacity: 0}}
-          animate={{y: 0, opacity: 100}}
-          transition={{delay: 0.4, velocity: 100}}
-        >
-          <Link href={'/'}>
-            <Button className="bg-grey-base text-grey-secondary">
-              Go to Shopping
-            </Button>
-          </Link>
-        </motion.div>
+        <div>
+          <motion.div
+            initial={{y: 50, opacity: 0}}
+            animate={{y: 0, opacity: 100}}
+            transition={{delay: 0.3, velocity: 100}}
+          >
+            <Link href={'/dashboard'}>
+              <Button className="bg-success text-white mb-4">
+                {/* My Dashboard */}
+                Go to Billing
+              </Button>
+            </Link>
+          </motion.div>
+          <motion.div
+            initial={{y: 50, opacity: 0}}
+            animate={{y: 0, opacity: 100}}
+            transition={{delay: 0.4, velocity: 100}}
+          >
+            <Link href={'/'}>
+              <Button className="bg-grey-base text-grey-secondary w-full">
+                {/* Go to Shopping */}
+                Home
+              </Button>
+            </Link>
+          </motion.div>
+        </div>
       </div>
     </motion.div>
   );

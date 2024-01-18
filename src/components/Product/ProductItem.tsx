@@ -26,7 +26,7 @@ const ProductItem = (props: Props) => {
         enterFrom="opacity-0"
         enterTo="opacity-100"
       > */}
-      <div className="cursor-pointer  rounded-lg border-b border-transparent group hover:border-grey">
+      <div className="cursor-pointer  rounded-lg border-b border-transparent group hover:border-grey w-60 h-full">
         <img
           alt=""
           src={
@@ -35,7 +35,11 @@ const ProductItem = (props: Props) => {
           className="w-60 h-40 object-cover rounded-lg duration-200 group-hover:shadow-xl"
         />
         <div className="my-3">
-          <h3>{props.title}</h3>
+          <h3>
+            {props.title &&
+              props.title?.slice(0, 45) +
+                (props.title?.length > 45 ? '...' : '')}
+          </h3>
           <p className="text-warning">Rp{formatToCurency(props.price ?? 0)}</p>
         </div>
       </div>

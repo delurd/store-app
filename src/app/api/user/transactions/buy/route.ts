@@ -1,6 +1,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/api/action";
+import { revalidateFetch } from "@/app/action";
 
 type productStoreType = { storeId: string, productsId: [], shippingPrice?: string, totalPrice?: string }
 
@@ -103,10 +104,11 @@ export const POST = async (req: NextRequest) => {
 
                 for (const productId of store.productsId) {
                     // console.log('PRODUCT ' + resStoreTransaction.id);
-
                     const productTransaction = await prisma.productsTransaction.create({ data: { storeTransactionId: resStoreTransaction.id, productId } })
+                    const productQuantity = await prisma.products.update({ where: { id: productId }, data: { quantity: { decrement: 1 } } })
                 }
             }
+            revalidateFetch('product')
             await prisma.userCart.deleteMany({ where: { userId } })
 
             return NextResponse.json({ message: 'success', data: resTransaction })

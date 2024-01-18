@@ -23,7 +23,9 @@ export const GET = async (req: NextRequest, context: { params: { id: string } })
                                     slug: true,
                                     store: { select: { name: true } }
                                 }
-                            }
+                            },
+                            id: true,
+                            CustomerReview: { select: { review: true } }
                         }
                     },
                     transaction: {
