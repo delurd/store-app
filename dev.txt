@@ -1,6 +1,8 @@
-- update skema transaksi
-- tambah alamat di database transaksi
+- update skema transaksi (v)
+- tambah alamat di database transaksi (v)
 - tambah ongkir di cart (v)
 - integrasi https://rajaongkir.com/dokumentasi untuk dapat harga ongkir (v)
 - integrasi payment gateway
 - Tambah Saldo Seller
+
+https://cloudinary.com/blog/uploading-images-videos-next-js-server-side-multer-xata

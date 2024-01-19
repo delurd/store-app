@@ -1,9 +1,12 @@
- 
+
 import { writeFile } from "fs/promises";
 import { NextRequest, NextResponse } from "next/server";
 import { join } from "path";
 import { generateCustomId } from "../../action";
 import { prisma } from "@/app/api/action";
+import DataURIParser from "datauri/parser";
+import cloudinary from "@/utils/cloudinary";
+import { revalidateFetch } from "@/app/action";
 
 export const GET = async (req: NextRequest) => {
     const searchParams = req.nextUrl.searchParams
@@ -29,6 +32,7 @@ export const GET = async (req: NextRequest) => {
 export const POST = async (req: NextRequest) => {
     const userId = req.headers.get('Authorization') ?? ''
     const bodyForm = await req.formData()
+    const parser = new DataURIParser()
 
     const name = bodyForm.get('name') as string ?? ''
     const price = bodyForm.get('price') as string ?? ''
@@ -55,18 +59,25 @@ export const POST = async (req: NextRequest) => {
                 const randomId = generateCustomId(1)
                 const imageName = `image${randomId}product${slug.replaceAll('-', '')}.${imageType}`
 
-                const path = join(process.cwd(), 'public/uploads/products/', imageName)
-                await writeFile(path, buffer)
-                // console.log(imageName);
+                // const path = join(process.cwd(), 'public/uploads/products/', imageName)
+                // await writeFile(path, buffer)
+                // // console.log(imageName);
+                // imagesPath.push('/uploads/products/' + imageName)
 
-                imagesPath.push('/uploads/products/' + imageName)
+                const base64Image = parser.format(imageName, buffer)
+                const contentImageBuffer = base64Image.content as string
+                const uploadImage = await cloudinary.v2.uploader.upload(contentImageBuffer)
+                imagesPath.push({ id: uploadImage.public_id, path: uploadImage.url })
+
             }
             // console.log(imagesPath);
 
             try {
-                const res = await prisma.products.create({ data: { name, price, category, description, weight, quantity, slug, thumbnailPath: imagesPath[0], sellerId: userId, storeId: storeId.id } })
+                const res = await prisma.products.create({ data: { name, price, category, description, weight, quantity, slug, thumbnailPath: imagesPath[0].path, sellerId: userId, storeId: storeId.id } })
 
-                await prisma.productsImages.createMany({ data: imagesPath.map((path) => { return { path, productId: res.id } }) })
+                // await prisma.productsImages.createMany({ data: imagesPath.map((path) => { return { path, productId: res.id } }) })
+                await prisma.productsImages.createMany({ data: imagesPath.map((item) => { return { path: item.path, id: item.id, productId: res.id } }) })
+                // revalidateFetch('product')
 
                 return NextResponse.json({ message: 'success' })
             } catch (error) {
@@ -108,6 +119,7 @@ export const PUT = async (req: NextRequest) => {
 
                 const res = await prisma.products.update({ where: { id, sellerId: userId }, data: { name, price, category, weight, quantity, description, thumbnailPath, slug: sluging } })
 
+                revalidateFetch(res.slug)
                 return NextResponse.json({ message: 'success', data: res })
             } catch (error) {
                 error = error

@@ -160,6 +160,10 @@ const TransactionDetailsSell = ({params}: {params: {id: string}}) => {
                   <p className="text-grey-dark">Phone</p>
                   <h3>{buyerProfile.phone}</h3>
                 </div>
+                <div>
+                  <p className="text-grey-dark">Shipping Courier</p>
+                  <h3>JNE REG</h3>
+                </div>
               </div>
             </div>
             <div>

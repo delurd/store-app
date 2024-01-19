@@ -19,6 +19,7 @@ export const PUT = async (req: NextRequest) => {
                 }
             }
         }
+        // const del = await prisma.transactions.delete({ where: { id: transactionId } })
 
         revalidateFetch('product')
         return NextResponse.json({ message: 'success', data: { paymentStatus } })

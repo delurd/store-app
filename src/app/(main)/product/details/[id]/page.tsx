@@ -15,7 +15,7 @@ const getData = async (slug: string) => {
   return await fetch(host + '/api/products/details/' + slug, {
     // cache: 'no-store',
     next: {
-      tags: ['product'],
+      tags: ['product', slug],
     },
   })
     .then((res) => {

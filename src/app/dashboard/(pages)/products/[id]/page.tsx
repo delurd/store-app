@@ -31,6 +31,7 @@ const ProductDetail = ({params}: {params: {id: string}}) => {
   const [isShowModalAddImage, setIsShowModalAddImage] = useState(false);
   const [thumbnail, setThumbnail] = useState('');
   const [imagesPath, setImagesPath] = useState<any[]>([]);
+  const [loadingRemoveImage, setLoadingRemoveImage] = useState(false);
 
   const {
     data: dataProduct,
@@ -81,6 +82,7 @@ const ProductDetail = ({params}: {params: {id: string}}) => {
   };
 
   const handleRemoveImage = async (id: string, path: string) => {
+    setLoadingRemoveImage(true);
     await fetchWithToken(
       '/api/user/products/images',
       'DELETE',
@@ -104,6 +106,8 @@ const ProductDetail = ({params}: {params: {id: string}}) => {
       .catch((err) => {
         toast('Failed delete image!');
       });
+
+    setLoadingRemoveImage(false);
   };
 
   const actionUpdateThumbnail = async (path: string) => {
@@ -277,7 +281,11 @@ const ProductDetail = ({params}: {params: {id: string}}) => {
                 }}
                 className="w-7 h-7 flex-center rounded-full opacity-70 hover:opacity-100 bg-alert text-white absolute top-0 right-0 translate-x-1/3 -translate-y-1/3"
               >
-                ✖
+                {loadingRemoveImage ? (
+                  <Loader size="small" theme="light" />
+                ) : (
+                  '✖'
+                )}
               </button>
             </div>
           ))}
