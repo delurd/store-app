@@ -13,7 +13,7 @@ export default function Home() {
             <TrendCategories />
           </div>
           <div className="space-y-4">
-            <h1 className="font-medium">New Products</h1>
+            <h1 className="font-medium">Recent Products</h1>
             <ProductList isPaginate={false} query='totalOnPage=4'/>
           </div>
         </div>
