@@ -118,6 +118,7 @@ const ModalAddProductImage = (props: Props) => {
             }}
           ></input>
         </div>
+        <span className='text-grey-dark text-sm'>max-size: 1mb</span>
         <div className="space-y-2">
           <Button
             className="bg-success text-white px-14 w-full"

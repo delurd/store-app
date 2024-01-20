@@ -84,7 +84,7 @@ const CreateProduct = (props: Props) => {
             </div>
             <div>
               <label htmlFor="name">Quantity</label>
-              <Input min={0} type="number" id="quantity" name="quantity" />
+              <Input min={0} type="number" id="quantity" name="quantity" defaultValue={1}/>
             </div>
           </div>
           <div>
@@ -109,7 +109,7 @@ const CreateProduct = (props: Props) => {
             ></textarea>
           </div>
           <div>
-            <p className="mb-[6px]">Product Image</p>
+            <p className="mb-[6px]">Product Image <span className='text-grey-dark text-sm'>(max-size: 1mb)</span></p>
             <div className="flex max-sm:flex-col gap-4">
               <div className="h-12 p-[10px] w-full bg-grey-base rounded-lg overflow-hidden text-nowrap">
                 <p>{images.map((image) => image.name).join(', ')}</p>

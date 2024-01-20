@@ -52,6 +52,8 @@ export const POST = async (req: NextRequest) => {
 
         if (storeId) {
             for (const image of images) {
+                if (image.size > 1000000) return NextResponse.json({ message: 'failed', error: ['image must less then 2mb'] }, { status: 400 })
+
                 const byte = await image.arrayBuffer()
                 const buffer = Buffer.from(byte)
 

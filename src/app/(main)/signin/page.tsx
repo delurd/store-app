@@ -42,7 +42,7 @@ const SigninPage = (props: Props) => {
       email: formData.get('email'),
       password: formData.get('password'),
     };
-    console.log('try sign in');
+    // console.log('try sign in');
 
     setLoading(true);
     signIn('login', {...rawFormData, redirect: false}).then((value) => {

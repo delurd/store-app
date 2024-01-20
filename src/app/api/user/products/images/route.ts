@@ -30,14 +30,14 @@ export const GET = async (req: NextRequest) => {
 
 
 export const POST = async (req: NextRequest) => {
-    const userId = req.headers.get('Authorizaton') ?? ''
+    const userId = req.headers.get('Authorization') ?? ''
     const formBody = await req.formData()
     const parser = new DataURIParser()
 
     const image = formBody.get('image') as File ?? ''
     const productId = formBody?.get('productId') as string ?? ''
 
-    if (image.size > 2000000) return NextResponse.json({ message: 'failed', error: ['image must less then 2mb'] }, { status: 400 })
+    if (image.size > 1000000) return NextResponse.json({ message: 'failed', error: ['image must less then 2mb'] }, { status: 400 })
 
     if (productId) {
         try {
@@ -82,7 +82,7 @@ export const POST = async (req: NextRequest) => {
 }
 
 export const DELETE = async (req: NextRequest) => {
-    const userId = req.headers.get('Authorizaton') ?? ''
+    const userId = req.headers.get('Authorization') ?? ''
     const body = await req.json()
     const id = body?.id ?? ''
 
@@ -104,7 +104,6 @@ export const DELETE = async (req: NextRequest) => {
             revalidateFetch(res.product.slug)
             return NextResponse.json({ message: 'success' })
         } catch (error) {
-
         }
     } else {
         return NextResponse.json({ message: 'Something went wrong ', error: 'body id required' }, { status: 400 })

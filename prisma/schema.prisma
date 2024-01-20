@@ -38,6 +38,7 @@ model Store {
   openStatus       Boolean            @default(false)
   Products         Products[]
   FinancialHistory FinancialHistory[]
+  // StoreTransaction StoreTransaction[]
 }
 
 model FinancialHistory {
@@ -136,6 +137,8 @@ model Transactions {
 
 model StoreTransaction {
   id                  String                @id @default(cuid())
+  // storeId             String
+  // store               Store                 @relation(fields: [storeId], references: [id])
   totalPrice          String
   shippingStatus      String                @default("pending") //pending | process | shipping | success | canceled
   shippingReceipt     String?
