@@ -27,9 +27,17 @@ const CustomerReviewList = (props: Props) => {
         Customer Review {dataReview.length ? `(${dataReview.length})` : ''}
       </h3>
       <div className="space-y-4 max-h-[500px] overflow-y-auto">
-        {dataReview.map((val: any, idx: number) => (
-          <CustomerReviewItem name={val?.name} review={val?.review} key={idx} />
-        ))}
+        {dataReview.length ? (
+          dataReview.map((val: any, idx: number) => (
+            <CustomerReviewItem
+              name={val?.name}
+              review={val?.review}
+              key={idx}
+            />
+          ))
+        ) : (
+          <p>No reviews yet</p>
+        )}
       </div>
     </>
   );
