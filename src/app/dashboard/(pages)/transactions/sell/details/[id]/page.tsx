@@ -61,7 +61,11 @@ const TransactionDetailsSell = ({params}: {params: {id: string}}) => {
         statusShippingType[data.shippingStatus as 'pending' | 'shipping']
       );
       queryClient.setQueryData(['transactionDetail', params.id], (old: any) => {
-        return {...old, shippingStatus: data?.shippingStatus};
+        return {
+          ...old,
+          shippingStatus: data?.shippingStatus,
+          shippingReceipt: data?.shippingReceipt,
+        };
       });
       toast('success');
     },
@@ -211,11 +215,18 @@ const TransactionDetailsSell = ({params}: {params: {id: string}}) => {
                   </p>
                 ) : (
                   <Select
-                    data={[
-                      {name: 'Pending', value: 'pending'},
-                      {name: 'Shipping', value: 'shipping'},
-                      {name: 'Success', value: 'success'},
-                    ]}
+                    data={
+                      dataTransaction?.shippingStatus == 'pending'
+                        ? [
+                            {name: 'Pending', value: 'pending'},
+                            {name: 'Shipping', value: 'shipping'},
+                          ]
+                        : [
+                            {name: 'Pending', value: 'pending'},
+                            {name: 'Shipping', value: 'shipping'},
+                            {name: 'Success', value: 'success'},
+                          ]
+                    }
                     selectWidth="w-44"
                     value={{
                       name: shippingStatus ?? '',
