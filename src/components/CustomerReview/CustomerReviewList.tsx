@@ -36,7 +36,7 @@ const CustomerReviewList = (props: Props) => {
             />
           ))
         ) : (
-          <p>No reviews yet</p>
+          <p className='text-grey-dark'>No reviews yet</p>
         )}
       </div>
     </>

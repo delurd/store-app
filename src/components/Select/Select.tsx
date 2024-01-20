@@ -31,6 +31,10 @@ const Select = (props: Props) => {
     props.value?.name && setSelectedItem(props.value);
   }, [props.value]);
 
+  useEffect(() => {
+    props.defaultValue?.name && setSelectedItem(props.defaultValue);
+  }, [props.defaultValue]);
+
   return (
     <div
       className={
