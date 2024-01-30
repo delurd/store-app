@@ -71,6 +71,16 @@ export const POST = async (req: NextRequest) => {
     // console.log(buyerId, paymentTotal, productStore);
     // return NextResponse.json({ message: '' }, { status: 401 })
 
+    for (const store of productStore) {
+        for (const productId of store.productsId) {
+            const cekStock = await prisma.products.findUnique({ where: { id: productId } })
+
+            if (cekStock?.quantity == 0) {
+                return NextResponse.json({ message: 'Failed', error: ['An item is out of stock'] }, { status: 400 })
+            }
+        }
+    }
+
     if (userId) {
         try {
             // console.log('POST transaction buy');

@@ -12,7 +12,7 @@ export const GET = async (req: NextRequest) => {
                 product: {
                     include: {
                         store: true,
-                        seller: { select: { UserProfile: true } }
+                        seller: { select: { UserProfile: {select:{cityId: true, proviceId: true}} } }
                     }
                 },
             }

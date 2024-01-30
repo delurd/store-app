@@ -41,7 +41,7 @@ const CartItem = (props: Props) => {
   return (
     <div className="grid md:grid-cols-12 max-md:gap-2 items-center">
       <div className="md:col-span-3">
-        <div className="h-[85px] w-[160px] rounded-lg overflow-hidden">
+        <div className="h-[85px] w-[160px] rounded-lg overflow-hidden relative">
           <img
             alt={product?.thumbnailPath ?? ''}
             src={
@@ -51,6 +51,11 @@ const CartItem = (props: Props) => {
             }
             className="h-full w-full object-cover"
           />
+          {props.data?.product?.quantity == 0 ? (
+            <div className="absolute inset-0 bg-[#FF71585f] flex-center text-white">
+              Out of Stock
+            </div>
+          ) : null}
         </div>
       </div>
       <div className="md:col-span-4">

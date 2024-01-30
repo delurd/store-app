@@ -80,6 +80,7 @@ const ProductDetailPage = async ({params}: {params: {id: string}}) => {
               isAvailable={data?.quantity ? data?.quantity > 0 : false}
               productId={data.id}
               storeId={data.store?.id}
+              stock={data.quantity}
             />
           </div>
         </div>

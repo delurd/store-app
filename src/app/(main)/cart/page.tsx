@@ -155,6 +155,15 @@ const CartPage = (props: Props) => {
   };
 
   const actionCheckout = async () => {
+    if (cartData && cartData.find((data) => data.product?.quantity == 0)) {
+      toast.warning('Some items are out of stock, please remove first!', {
+        theme: 'colored',
+        autoClose: 5000,
+      });
+
+      return;
+    }
+
     const productStore = groupProductStore();
 
     const body = {

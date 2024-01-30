@@ -12,6 +12,7 @@ type Props = {
   quantity?: number;
   isAvailable?: boolean;
   storeId?: string;
+  stock?: number;
 };
 
 const AddCartButton = (props: Props) => {
@@ -41,12 +42,28 @@ const AddCartButton = (props: Props) => {
   });
 
   const actionAddToCart = async () => {
-    if (props.isAvailable) {
-      if (status == 'unauthenticated') {
-        toast('Please signin first!', {autoClose: 3000});
+    const dataCart: [] | undefined = queryClient.getQueryData(['cart']);
+
+    if (dataCart && props.stock) {
+      const getProductFromCart = dataCart.filter(
+        (data: any) => data?.productId == props.productId
+      );
+
+      if (getProductFromCart.length >= props.stock) {
+        toast('Stock limit!');
         return;
       }
-      mutation.mutate();
+      // console.log('CART DATACart', dataCart, props.productId);
+
+      if (props.isAvailable) {
+        if (status == 'unauthenticated') {
+          toast('Please signin first!', {autoClose: 3000});
+          return;
+        }
+        mutation.mutate();
+      }
+    } else {
+      toast('Wait a moment and try again');
     }
   };
 
