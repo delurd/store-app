@@ -44,6 +44,11 @@ const AddCartButton = (props: Props) => {
   const actionAddToCart = async () => {
     const dataCart: [] | undefined = queryClient.getQueryData(['cart']);
 
+    if (status == 'unauthenticated') {
+      toast('Please signin first!', {autoClose: 3000});
+      return;
+    }
+
     if (dataCart && props.stock) {
       const getProductFromCart = dataCart.filter(
         (data: any) => data?.productId == props.productId
@@ -56,10 +61,6 @@ const AddCartButton = (props: Props) => {
       // console.log('CART DATACart', dataCart, props.productId);
 
       if (props.isAvailable) {
-        if (status == 'unauthenticated') {
-          toast('Please signin first!', {autoClose: 3000});
-          return;
-        }
         mutation.mutate();
       }
     } else {

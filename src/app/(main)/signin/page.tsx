@@ -31,7 +31,7 @@ const SigninPage = (props: Props) => {
     });
 
     if (!validatedFields.success) {
-      console.log(validatedFields.error.flatten().fieldErrors);
+      // console.log(validatedFields.error.flatten().fieldErrors);
 
       return {
         errors: validatedFields.error.flatten().fieldErrors,
