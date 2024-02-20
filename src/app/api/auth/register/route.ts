@@ -35,10 +35,10 @@ export const POST = async (req: NextRequest) => {
                         }
                     })
 
-                    await prisma.store.create({ data: { userId: id, openStatus, name: storeName, category: storeCategory } })
+                    const storeRes = await prisma.store.create({ data: { userId: id, openStatus, name: storeName, category: storeCategory } })
                     await prisma.userProfile.create({ data: { userId: id } })
 
-                    return NextResponse.json({ message: 'success', data: { id, fullname, email } })
+                    return NextResponse.json({ message: 'success', data: { id, fullname, email, storeId: storeRes.id } })
                 } catch (error) {
                     // console.log(error);
                 }
